@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -550,10 +551,6 @@
   </div>
   <div class="topbar-right">
     <div id="clock">--:-- -- ET</div>
-    <button onclick="localStorage.removeItem('anthropic_api_key'); location.reload()" 
-style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;border-radius:4px;letter-spacing:1px;">
-🔑 RESET KEY
-</button>
     <button id="run-btn" onclick="runAgent()" style="display:none">⟳ Refresh</button>
   </div>
 </div>
@@ -584,6 +581,9 @@ style="background:transparent;border:1px solid var(--border);color:var(--muted);
     <div class="landing-title">📊 MARKET AGENT</div>
     <div class="landing-sub">INVESTMENT RULEBOOK // FIDELITY 401K BROKERAGELINK // NOT FINANCIAL ADVICE</div>
     <button class="landing-btn" onclick="runAgent()">▶ RUN MORNING REPORT</button>
+    <div style="margin-top:16px;">
+      <button onclick="showKeyModal()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;border-radius:4px;letter-spacing:1px;">🔑 ENTER / RESET API KEY</button>
+    </div>
     <div class="rules-preview">
       <div class="rule-chip">🔴 Falling Knife Rule</div>
       <div class="rule-chip">⚪ MA Entry Hierarchy</div>
@@ -652,6 +652,11 @@ function getApiKey() {
   return localStorage.getItem('anthropic_api_key') || '';
 }
 
+function showKeyModal() {
+  document.getElementById('api-key-input').value = '';
+  document.getElementById('api-modal').classList.add('show');
+}
+
 function saveApiKey() {
   const key = document.getElementById('api-key-input').value.trim();
   if (!key.startsWith('sk-')) {
@@ -665,8 +670,8 @@ function saveApiKey() {
 
 function checkApiKey() {
   const key = getApiKey();
-  if (!key) {
-    document.getElementById('api-modal').classList.add('show');
+  if (!key || key.length < 20) {
+    showKeyModal();
     return false;
   }
   return true;
