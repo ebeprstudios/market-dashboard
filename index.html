@@ -579,7 +579,7 @@
   <!-- LANDING -->
   <div id="landing">
     <div class="landing-title">📊 MARKET AGENT</div>
-    <div class="landing-sub">INVESTMENT RULEBOOK // FIDELITY 401K BROKERAGELINK // NOT FINANCIAL ADVICE</div>
+    <div class="landing-sub">INVESTMENT RULEBOOK //FIDELITY 401K BROKERAGELINK //NOT FINANCIAL ADVICE</div>
     <button class="landing-btn" onclick="runAgent()">▶ RUN MORNING REPORT</button>
     <div style="margin-top:16px;">
       <button onclick="showKeyModal()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;border-radius:4px;letter-spacing:1px;">🔑 ENTER / RESET API KEY</button>
@@ -613,7 +613,7 @@
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
+// CONFIG ───────────────────────────────────────────────────────────────────
 const PORTFOLIO = {
   tier1: [
     { sym: "SPY",  shares: 7.042, avgCost: 621.79, note: "S&P 500" },
@@ -647,7 +647,7 @@ const STOPS = [
   { sym: "DRLL", stop: 35.50,  limit: 34.50,  type: "HARD" },
 ];
 
-// ─── API KEY ──────────────────────────────────────────────────────────────────
+// API KEY ──────────────────────────────────────────────────────────────────
 function getApiKey() {
   return localStorage.getItem('anthropic_api_key') || '';
 }
@@ -677,9 +677,12 @@ function checkApiKey() {
   return true;
 }
 
-// Allow Enter key in modal
-document.getElementById('api-key-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') saveApiKey();
+//Allow Enter key in modal - wait for DOM
+window.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('api-key-input');
+  if (input) input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveApiKey();
+  });
 });
 
 ─
@@ -695,14 +698,14 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-// ─── TRIPLE WITCHING CHECK ────────────────────────────────────────────────────
+// TRIPLE WITCHING CHECK ────────────────────────────────────────────────────
 function isTripleWitching() {
   const now = new Date();
   const et = new Date(now.toLocaleString('en-US', {timeZone: 'America/New_York'}));
-  if (et.getDay() !== 5) return false; // Friday
-  const month = et.getMonth(); // 0=Jan, 2=Mar, 5=Jun, 8=Sep, 11=Dec
+  if (et.getDay() !== 5) return false; //Friday
+  const month = et.getMonth(); //0=Jan, 2=Mar, 5=Jun, 8=Sep, 11=Dec
   if (![2,5,8,11].includes(month)) return false;
-  // Is it the 3rd Friday?
+  //Is it the 3rd Friday?
   const day = et.getDate();
   return day >= 15 && day <= 21;
 }
@@ -711,7 +714,7 @@ if (isTripleWitching()) {
   document.getElementById('tw-banner').style.display = 'block';
 }
 
-// ─── LOADER MESSAGES ──────────────────────────────────────────────────────────
+// LOADER MESSAGES ──────────────────────────────────────────────────────────
 const loaderMsgs = [
   "Checking falling knife signals...",
   "Scanning moving averages...",
@@ -736,7 +739,7 @@ function startLoader() {
 
 function stopLoader() { clearInterval(loaderInterval); }
 
-// ─── MAIN RUN ─────────────────────────────────────────────────────────────────
+// MAIN RUN ─────────────────────────────────────────────────────────────────
 async function runAgent() {
   if (!checkApiKey()) return;
   document.getElementById('landing').style.display = 'none';
@@ -866,7 +869,7 @@ Return this exact JSON structure:
   document.getElementById('run-btn').disabled = false;
 }
 
-// ─── RENDER ───────────────────────────────────────────────────────────────────
+// RENDER ───────────────────────────────────────────────────────────────────
 function renderReport(r) {
   document.getElementById('loading').style.display = 'none';
 
@@ -881,16 +884,16 @@ function renderReport(r) {
   const trendColor = r.market_summary.broad_trend === 'bullish' ? 'var(--green)' :
                      r.market_summary.broad_trend === 'bearish' ? 'var(--red)' : 'var(--amber)';
 
-  // ─ Thesis status colors
+  // Thesis status colors
   const thesisColor = (s) => s === 'INTACT' ? 'var(--green)' : s === 'CAUTION' ? 'var(--amber)' : 'var(--red)';
 
-  // ─ Stop alert row class
+  // Stop alert row class
   const alertClass = (u) => u === 'critical' ? 'row-alert' : u === 'alert' ? 'row-warn' : '';
 
-  // ─ Tier2 action color
+  // Tier2 action color
   const t2color = (a) => a === 'SELL' ? 'var(--red)' : a === 'TRIM' ? 'var(--amber)' : a === 'HOLD' ? 'var(--green)' : 'var(--muted)';
 
-  // ─ Priority badge
+  // Priority badge
   const priBadge = (t) => {
     if (t === 'BUY') return '<span class="badge badge-ok">BUY</span>';
     if (t === 'SELL') return '<span class="badge badge-alert">SELL</span>';
