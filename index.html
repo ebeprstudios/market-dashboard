@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -551,6 +550,10 @@
   </div>
   <div class="topbar-right">
     <div id="clock">--:-- -- ET</div>
+    <button onclick="localStorage.removeItem('anthropic_api_key'); location.reload()" 
+style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;border-radius:4px;letter-spacing:1px;">
+🔑 RESET KEY
+</button>
     <button id="run-btn" onclick="runAgent()" style="display:none">⟳ Refresh</button>
   </div>
 </div>
