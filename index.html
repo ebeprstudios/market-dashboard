@@ -749,13 +749,13 @@ async function runAgent() {
   document.getElementById('run-btn').disabled = true;
   startLoader();
 
-  const twNote = isTripleWitching() ? "\n\n⚠️ TODAY IS TRIPLE WITCHING FRIDAY (3rd Friday of March/June/September/December). All stop-limit gaps should be widened to $2–3 today. Flag this prominently." : "";
+  const twNote = isTripleWitching() ? "\n\nWARNING TODAY IS TRIPLE WITCHING FRIDAY (3rd Friday of March/June/September/December). All stop-limit gaps should be widened to $2-3 today. Flag this prominently." : "";
 
   const portfolioSummary = `
-TIER 1 (UNTOUCHABLE — never sell):
+TIER 1 (UNTOUCHABLE - never sell):
 ${PORTFOLIO.tier1.map(p => `- ${p.sym}: ${p.shares} shares @ $${p.avgCost}/share avg cost`).join('\n')}
 
-TIER 2 (War Trades — trim freely when thesis ends):
+TIER 2 (War Trades - trim freely when thesis ends):
 ${PORTFOLIO.tier2.map(p => `- ${p.sym}: ${p.shares} shares @ $${p.avgCost}/share avg cost${p.stop ? `, stop at $${p.stop}` : ''}`).join('\n')}
 
 Cash available: $${PORTFOLIO.cash.toLocaleString()}
@@ -844,7 +844,7 @@ Return this exact JSON structure:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
+        max_tokens: 4000,
         messages: [{ role: "user", content: prompt }]
       })
     });
@@ -861,7 +861,7 @@ Return this exact JSON structure:
     document.getElementById('loading').style.display = 'none';
     const errEl = document.getElementById('error-msg');
     errEl.style.display = 'block';
-    errEl.textContent = "⚠️ Agent error: " + e.message + ". Check console for details.";
+    errEl.textContent = "WARNING Agent error: " + e.message + ". Check console for details.";
     console.error(e);
   }
 
@@ -922,17 +922,17 @@ function renderReport(r) {
       <div class="stat-card blue">
         <div class="stat-label">Cash Available</div>
         <div class="stat-value">$${PORTFOLIO.cash.toLocaleString()}</div>
-        <div class="stat-change neutral">Deploy cash only — not Tier 1</div>
+        <div class="stat-change neutral">Deploy cash only - not Tier 1</div>
       </div>
     </div>
 
     <!-- THESIS STATUS -->
     <div class="panels full" style="margin-bottom:16px;">
       <div class="panel">
-        <div class="panel-header">⚔️ Thesis Status</div>
+        <div class="panel-header">DEFENSE Thesis Status</div>
         <div class="thesis-grid">
           <div class="thesis-cell">
-            <div class="thesis-name">⛽ Energy</div>
+            <div class="thesis-name">ENERGY Energy</div>
             <div class="thesis-status" style="color:${thesisColor(r.thesis_check.energy.status)}">${r.thesis_check.energy.status}</div>
             <div class="thesis-detail">${r.thesis_check.energy.reason}</div>
           </div>
@@ -942,7 +942,7 @@ function renderReport(r) {
             <div class="thesis-detail">${r.thesis_check.metals.reason}</div>
           </div>
           <div class="thesis-cell">
-            <div class="thesis-name">🛡️ Defense</div>
+            <div class="thesis-name">🛡 Defense</div>
             <div class="thesis-status" style="color:${thesisColor(r.thesis_check.defense.status)}">${r.thesis_check.defense.status}</div>
             <div class="thesis-detail">${r.thesis_check.defense.reason}</div>
           </div>
@@ -995,7 +995,7 @@ function renderReport(r) {
     <!-- TIER 1 TABLE -->
     <div class="panels full" style="margin-bottom:16px;">
       <div class="panel">
-        <div class="panel-header">🔵 Tier 1 — Forever Holds (UNTOUCHABLE)</div>
+        <div class="panel-header">🔵 Tier 1 - Forever Holds (UNTOUCHABLE)</div>
         <div class="panel-body">
           <table>
             <thead><tr>
@@ -1029,7 +1029,7 @@ function renderReport(r) {
     <!-- TIER 2 TABLE -->
     <div class="panels full" style="margin-bottom:16px;">
       <div class="panel">
-        <div class="panel-header">⚔️ Tier 2 — War Trades (Trim Freely)</div>
+        <div class="panel-header">DEFENSE Tier 2 - War Trades (Trim Freely)</div>
         <div class="panel-body">
           <table>
             <thead><tr>
@@ -1048,9 +1048,9 @@ function renderReport(r) {
                 const urgency = s.price_vs_stop === 'critical' || s.price_vs_stop === 'near stop' ? 'row-warn' : '';
                 return `<tr class="${urgency}">
                   <td><span class="sym">${s.sym}</span> <span class="badge badge-t2">T2</span></td>
-                  <td>${p.shares || '—'}</td>
-                  <td>$${p.avgCost || '—'}</td>
-                  <td class="tag-stop">${p.stop ? '$' + p.stop.toFixed(2) : '—'}</td>
+                  <td>${p.shares || '-'}</td>
+                  <td>$${p.avgCost || '-'}</td>
+                  <td class="tag-stop">${p.stop ? '$' + p.stop.toFixed(2) : '-'}</td>
                   <td>
                     ${s.verdict === 'INTACT' ? '<span class="badge badge-ok">INTACT</span>' :
                       s.verdict === 'CAUTION' ? '<span class="badge badge-watch">CAUTION</span>' :
@@ -1075,7 +1075,7 @@ function renderReport(r) {
       </div>
 
       <div class="panel">
-        <div class="panel-header">👁️ Watchlist</div>
+        <div class="panel-header">👁 Watchlist</div>
         <div class="panel-body">
           <table>
             <thead><tr><th>Symbol</th><th>Signal</th><th>Note</th></tr></thead>
@@ -1097,14 +1097,14 @@ function renderReport(r) {
         <div style="padding:12px 16px; border-top: 1px solid var(--border);">
           <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">MA Entry Hierarchy</div>
           <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
-            <div><span class="ma-dot ma-y"></span><span style="color:var(--ma-yellow)">9-Day Yellow</span> — Short-term momentum</div>
-            <div><span class="ma-dot ma-b"></span><span style="color:var(--ma-blue)">13-Day Blue</span> — Early trend confirmation</div>
-            <div><span class="ma-dot ma-w"></span><span style="color:var(--ma-white)">20-Day White</span> — ⭐ Primary entry trigger</div>
-            <div><span class="ma-dot ma-r"></span><span style="color:var(--ma-red)">50-Day Red</span> — Major support floor</div>
+            <div><span class="ma-dot ma-y"></span><span style="color:var(--ma-yellow)">9-Day Yellow</span> - Short-term momentum</div>
+            <div><span class="ma-dot ma-b"></span><span style="color:var(--ma-blue)">13-Day Blue</span> - Early trend confirmation</div>
+            <div><span class="ma-dot ma-w"></span><span style="color:var(--ma-white)">20-Day White</span> - STAR Primary entry trigger</div>
+            <div><span class="ma-dot ma-r"></span><span style="color:var(--ma-red)">50-Day Red</span> - Major support floor</div>
           </div>
           <div style="margin-top:10px;font-size:10px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;">
-            Ideal entry: price bouncing UP through ⚪ 20-day with 🔴 50-day below as support<br>
-            Falling knife: price below ALL 4 MAs — stay out
+            Ideal entry: price bouncing UP through WHITE 20-day with 🔴 50-day below as support<br>
+            Falling knife: price below ALL 4 MAs - stay out
           </div>
         </div>
       </div>
