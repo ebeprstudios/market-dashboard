@@ -34,29 +34,20 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-
 body {
-  background: var(--bg-base);
-  color: var(--text-primary);
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
+  background: var(--bg-base); color: var(--text-primary);
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 13px;
+  line-height: 1.5; min-height: 100vh; -webkit-font-smoothing: antialiased;
 }
 
 /* PASSWORD GATE */
 #password-gate {
-  position: fixed; inset: 0;
-  background: var(--bg-sunken);
-  z-index: 99999;
-  display: flex; align-items: center; justify-content: center;
+  position: fixed; inset: 0; background: var(--bg-sunken);
+  z-index: 99999; display: flex; align-items: center; justify-content: center;
 }
 .gate-box {
-  background: var(--bg-raised);
-  border: 1px solid var(--border-gold);
-  border-radius: 10px;
-  padding: 40px; width: 380px; max-width: 90vw; text-align: center;
+  background: var(--bg-raised); border: 1px solid var(--border-gold);
+  border-radius: 10px; padding: 40px; width: 380px; max-width: 90vw; text-align: center;
 }
 .gate-icon { font-size: 32px; margin-bottom: 16px; }
 .gate-title { font-size: 16px; font-weight: 700; color: var(--text-emphasis); margin-bottom: 4px; }
@@ -79,40 +70,55 @@ body {
 /* TOP BAR */
 #topbar {
   background: var(--bg-raised); border-bottom: 1px solid var(--border-gold);
-  padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 24px; display: flex; align-items: center; justify-content: space-between;
   position: sticky; top: 0; z-index: 100;
 }
 .logo { display: flex; align-items: center; gap: 10px; }
 .logo-mark {
-  width: 32px; height: 32px; background: var(--gold-dim);
-  border: 1px solid var(--border-gold); border-radius: 6px;
-  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  width: 30px; height: 30px; background: var(--gold-dim); border: 1px solid var(--border-gold);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px;
 }
 .logo-text { font-size: 11px; font-weight: 700; color: var(--text-emphasis); letter-spacing: 2px; text-transform: uppercase; }
 .logo-sub { font-size: 10px; color: var(--text-tertiary); margin-top: 1px; }
-.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
 #clock { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--gold-text); letter-spacing: 1px; }
-#run-btn {
-  background: var(--gold); color: #0A0C10; border: none; padding: 7px 16px;
-  font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 11px;
-  cursor: pointer; border-radius: 6px; transition: background 0.2s; display: none;
+
+/* LIVE PULSE INDICATOR */
+.live-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 20px;
+  background: var(--positive-bg); color: var(--positive);
+  border: 1px solid rgba(58,158,110,0.25);
 }
-#run-btn:hover { background: #D4AE52; }
-#run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.live-pill::before {
+  content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--positive);
+  animation: pulse 2s ease-in-out infinite;
+}
+.live-pill.paused { background: var(--bg-overlay); color: var(--text-tertiary); border-color: var(--border-subtle); }
+.live-pill.paused::before { background: var(--text-tertiary); animation: none; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+.tb-btn {
+  background: transparent; border: 1px solid var(--border-soft); color: var(--text-secondary);
+  padding: 5px 12px; font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 500;
+  cursor: pointer; border-radius: 5px; transition: all 0.15s;
+}
+.tb-btn:hover { border-color: var(--gold); color: var(--gold-text); }
+.tb-btn.primary { background: var(--gold); border-color: var(--gold); color: #0A0C10; font-weight: 600; }
+.tb-btn.primary:hover { background: #D4AE52; }
 
 /* TRIPLE WITCHING */
 #tw-banner {
-  display: none; background: var(--warning-bg);
-  border-bottom: 1px solid rgba(184,120,48,0.2);
+  display: none; background: var(--warning-bg); border-bottom: 1px solid rgba(184,120,48,0.2);
   padding: 8px 24px; font-size: 11px; font-weight: 500;
   color: var(--warning); letter-spacing: 0.5px; text-align: center;
 }
 
 /* API MODAL */
 #api-modal {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,12,16,0.88); z-index: 1000;
-  align-items: center; justify-content: center;
+  display: none; position: fixed; inset: 0; background: rgba(10,12,16,0.88);
+  z-index: 1000; align-items: center; justify-content: center;
 }
 #api-modal.show { display: flex; }
 .modal-box {
@@ -137,7 +143,7 @@ body {
 .modal-note { color: var(--text-tertiary); font-size: 10px; margin-top: 10px; text-align: center; }
 
 /* MAIN */
-#main { max-width: 1360px; margin: 0 auto; padding: 24px; }
+#main { max-width: 1380px; margin: 0 auto; padding: 22px 24px; }
 
 /* LANDING */
 #landing {
@@ -156,7 +162,7 @@ body {
 .key-btn {
   background: transparent; border: 1px solid var(--border-soft); color: var(--text-secondary);
   padding: 8px 18px; font-family: 'IBM Plex Sans', sans-serif; font-size: 11px;
-  cursor: pointer; border-radius: 6px; transition: border-color 0.2s, color 0.2s;
+  cursor: pointer; border-radius: 6px; transition: all 0.15s;
 }
 .key-btn:hover { border-color: var(--gold); color: var(--gold-text); }
 .rule-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 40px; max-width: 540px; }
@@ -186,55 +192,108 @@ body {
 @keyframes appear { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
 .report-meta {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 0 24px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 28px;
+  padding: 10px 0 22px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 26px;
 }
 .report-date { font-size: 11px; color: var(--text-tertiary); }
+.refresh-info { font-size: 10px; color: var(--text-tertiary); }
+
+/* LIVE PRICES TICKER BAR */
+#price-bar {
+  background: var(--bg-overlay); border: 1px solid var(--border-subtle);
+  border-radius: 8px; padding: 12px 18px; margin-bottom: 22px;
+  display: flex; align-items: center; gap: 0; overflow-x: auto;
+  scrollbar-width: none;
+}
+#price-bar::-webkit-scrollbar { display: none; }
+.price-item {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 16px; border-right: 1px solid var(--border-subtle); min-width: 90px;
+  flex-shrink: 0;
+}
+.price-item:last-child { border-right: none; }
+.price-sym { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--text-emphasis); margin-bottom: 3px; }
+.price-val { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; color: var(--text-emphasis); }
+.price-chg { font-family: 'IBM Plex Mono', monospace; font-size: 10px; margin-top: 2px; }
+.price-chg.up { color: var(--positive); }
+.price-chg.dn { color: var(--negative); }
+.price-chg.fl { color: var(--text-tertiary); }
+.price-loading { color: var(--text-tertiary); font-size: 11px; font-style: italic; }
+.price-bar-label {
+  font-size: 9px; font-weight: 700; color: var(--text-tertiary); letter-spacing: 2px;
+  text-transform: uppercase; margin-right: 16px; flex-shrink: 0; writing-mode: horizontal-tb;
+}
+#price-updated { font-size: 10px; color: var(--text-tertiary); margin-left: auto; flex-shrink: 0; padding-left: 16px; }
+
+/* NEWS SECTION */
+.news-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.news-item {
+  background: var(--bg-raised); border: 1px solid var(--border-subtle);
+  border-radius: 6px; padding: 12px 14px;
+  transition: border-color 0.15s; cursor: pointer;
+}
+.news-item:hover { border-color: var(--border-gold); }
+.news-source {
+  font-size: 9px; font-weight: 700; color: var(--gold-text); letter-spacing: 1.5px;
+  text-transform: uppercase; margin-bottom: 5px;
+}
+.news-headline {
+  font-size: 12px; font-weight: 500; color: var(--text-primary); line-height: 1.5;
+  margin-bottom: 6px;
+}
+.news-time { font-size: 10px; color: var(--text-tertiary); }
+.news-loading { color: var(--text-tertiary); font-size: 12px; font-style: italic; padding: 16px; }
+#news-updated { font-size: 10px; color: var(--text-tertiary); }
 
 /* SECTIONS */
-.section { margin-bottom: 36px; }
-.section-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-.section-title { font-size: 15px; font-weight: 600; color: var(--text-emphasis); margin-bottom: 14px; }
+.section { margin-bottom: 32px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.section-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 2px; text-transform: uppercase; }
+.section-title { font-size: 15px; font-weight: 600; color: var(--text-emphasis); }
+.section-meta { font-size: 10px; color: var(--text-tertiary); }
 
 /* MARKET BAR */
 .market-bar {
-  display: grid; grid-template-columns: auto 1fr 1fr 1fr 1fr;
+  display: grid; grid-template-columns: 200px 1fr 1fr 1fr 1fr;
   gap: 1px; background: var(--border-subtle);
   border: 1px solid var(--border-subtle); border-radius: 8px; overflow: hidden;
 }
 .market-bar-trend {
-  background: var(--bg-overlay); padding: 18px 22px;
-  display: flex; align-items: center; min-width: 180px;
+  background: var(--bg-overlay); padding: 16px 18px;
+  display: flex; flex-direction: column; justify-content: center;
 }
-.trend-value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
-.market-bar-cell { background: var(--bg-raised); padding: 14px 16px; }
+.trend-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+.trend-value { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; margin-bottom: 6px; }
+.trend-headline { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+.market-bar-cell { background: var(--bg-raised); padding: 14px 14px; }
 .mbc-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; }
 .mbc-value { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text-emphasis); margin-bottom: 3px; }
 .mbc-note { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
 
 /* ACTION ZONE */
-.action-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 36px; }
+.action-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
 /* CARDS */
 .card { background: var(--bg-raised); border: 1px solid var(--border-subtle); border-radius: 8px; overflow: hidden; }
 .card-header {
-  padding: 11px 16px; border-bottom: 1px solid var(--border-subtle);
-  display: flex; align-items: center;
+  padding: 10px 14px; border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between;
 }
-.card-accent { width: 3px; height: 14px; border-radius: 2px; margin-right: 10px; flex-shrink: 0; }
+.card-header-left { display: flex; align-items: center; }
+.card-accent { width: 3px; height: 13px; border-radius: 2px; margin-right: 9px; flex-shrink: 0; }
 .card-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); letter-spacing: 1.5px; text-transform: uppercase; }
 
 /* TABLES */
 .data-table { width: 100%; border-collapse: collapse; }
 .data-table thead tr { background: var(--bg-overlay); }
 .data-table thead th {
-  padding: 7px 14px; font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+  padding: 7px 13px; font-size: 10px; font-weight: 600; color: var(--text-tertiary);
   letter-spacing: 1px; text-transform: uppercase; text-align: left;
   border-bottom: 1px solid var(--border-subtle); white-space: nowrap;
 }
 .data-table tbody tr { border-bottom: 1px solid var(--border-subtle); transition: background 0.1s; }
 .data-table tbody tr:last-child { border-bottom: none; }
 .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-.data-table tbody td { padding: 9px 14px; font-size: 13px; vertical-align: middle; }
+.data-table tbody td { padding: 9px 13px; font-size: 13px; vertical-align: middle; }
 
 .row-critical { border-left: 2px solid var(--negative); }
 .row-warn { border-left: 2px solid var(--warning); }
@@ -243,7 +302,14 @@ body {
 .ticker { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text-emphasis); }
 .data-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text-primary); }
 .data-num.neg { color: #B06060; }
+.data-num.pos { color: #509070; }
 .cell-muted { font-size: 11px; color: var(--text-secondary); line-height: 1.45; }
+
+/* VALUE FLASH ANIMATION */
+@keyframes flash-up { 0%,100% { background: transparent; } 50% { background: rgba(58,158,110,0.15); } }
+@keyframes flash-dn { 0%,100% { background: transparent; } 50% { background: rgba(168,64,64,0.12); } }
+.flash-up { animation: flash-up 0.6s ease; }
+.flash-dn { animation: flash-dn 0.6s ease; }
 
 /* BADGES */
 .badge {
@@ -253,74 +319,78 @@ body {
 }
 .badge-critical { background: rgba(168,64,64,0.12); color: #C07070; border: 1px solid rgba(168,64,64,0.28); }
 .badge-alert    { background: rgba(184,120,48,0.12); color: #C09050; border: 1px solid rgba(184,120,48,0.28); }
-.badge-watch    { background: var(--gold-dim);        color: var(--gold-text); border: 1px solid var(--border-gold); }
-.badge-safe     { background: rgba(58,158,110,0.10);  color: #509070; border: 1px solid rgba(58,158,110,0.28); }
-.badge-t1       { background: rgba(58,110,168,0.10);  color: #5080A8; border: 1px solid rgba(58,110,168,0.28); }
-.badge-t2       { background: rgba(184,120,48,0.10);  color: #A08050; border: 1px solid rgba(184,120,48,0.22); }
-.badge-intact   { background: rgba(58,158,110,0.10);  color: #509070; border: 1px solid rgba(58,158,110,0.28); }
-.badge-caution  { background: rgba(184,120,48,0.12);  color: #C09050; border: 1px solid rgba(184,120,48,0.28); }
-.badge-exit     { background: rgba(168,64,64,0.12);   color: #C07070; border: 1px solid rgba(168,64,64,0.28); }
-.badge-hold     { background: rgba(58,110,168,0.10);  color: #5080A8; border: 1px solid rgba(58,110,168,0.28); }
-.badge-sell     { background: rgba(168,64,64,0.12);   color: #C07070; border: 1px solid rgba(168,64,64,0.28); }
-.badge-buy      { background: rgba(58,158,110,0.10);  color: #509070; border: 1px solid rgba(58,158,110,0.28); }
-.badge-trim     { background: rgba(184,120,48,0.12);  color: #C09050; border: 1px solid rgba(184,120,48,0.28); }
+.badge-watch    { background: var(--gold-dim); color: var(--gold-text); border: 1px solid var(--border-gold); }
+.badge-safe     { background: rgba(58,158,110,0.10); color: #509070; border: 1px solid rgba(58,158,110,0.28); }
+.badge-t1       { background: rgba(58,110,168,0.10); color: #5080A8; border: 1px solid rgba(58,110,168,0.28); }
+.badge-t2       { background: rgba(184,120,48,0.10); color: #A08050; border: 1px solid rgba(184,120,48,0.22); }
+.badge-intact   { background: rgba(58,158,110,0.10); color: #509070; border: 1px solid rgba(58,158,110,0.28); }
+.badge-caution  { background: rgba(184,120,48,0.12); color: #C09050; border: 1px solid rgba(184,120,48,0.28); }
+.badge-exit     { background: rgba(168,64,64,0.12);  color: #C07070; border: 1px solid rgba(168,64,64,0.28); }
+.badge-hold     { background: rgba(58,110,168,0.10); color: #5080A8; border: 1px solid rgba(58,110,168,0.28); }
+.badge-sell     { background: rgba(168,64,64,0.12);  color: #C07070; border: 1px solid rgba(168,64,64,0.28); }
+.badge-buy      { background: rgba(58,158,110,0.10); color: #509070; border: 1px solid rgba(58,158,110,0.28); }
+.badge-trim     { background: rgba(184,120,48,0.12); color: #C09050; border: 1px solid rgba(184,120,48,0.28); }
 
 /* THESIS */
 .thesis-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border-subtle); }
-.thesis-cell { background: var(--bg-raised); padding: 18px 16px; }
-.thesis-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-.thesis-status { font-size: 17px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
-.thesis-reason { font-size: 11px; color: var(--text-secondary); line-height: 1.55; }
+.thesis-cell { background: var(--bg-raised); padding: 16px 14px; }
+.thesis-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 7px; }
+.thesis-status { font-size: 16px; font-weight: 700; margin-bottom: 5px; letter-spacing: 0.5px; }
+.thesis-reason { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
 
 /* PRIORITY */
-.priority-list { padding: 4px 0; }
+.priority-list { padding: 2px 0; }
 .priority-item {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 10px 16px; border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 14px; border-bottom: 1px solid var(--border-subtle);
 }
 .priority-item:last-child { border-bottom: none; }
 .priority-num {
-  width: 22px; height: 22px; border-radius: 50%;
+  width: 20px; height: 20px; border-radius: 50%;
   background: var(--gold-dim); border: 1px solid var(--border-gold);
   display: flex; align-items: center; justify-content: center;
   font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700;
-  color: var(--gold-text); flex-shrink: 0; margin-top: 1px;
+  color: var(--gold-text); flex-shrink: 0; margin-top: 2px;
 }
-.priority-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.priority-text { font-size: 12px; color: var(--text-primary); line-height: 1.5; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
 
 /* ANALYSIS */
 .analysis-body {
-  padding: 18px 20px; font-size: 13px; color: var(--text-primary); line-height: 1.8;
+  padding: 16px 18px; font-size: 13px; color: var(--text-primary); line-height: 1.8;
   border-left: 3px solid var(--border-gold); background: var(--gold-dim);
-  margin: 14px; border-radius: 0 6px 6px 0;
+  margin: 12px; border-radius: 0 6px 6px 0;
 }
 
 /* MA LEGEND */
-.ma-legend { padding: 14px 16px; border-top: 1px solid var(--border-subtle); background: var(--bg-overlay); }
-.ma-legend-title { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
-.ma-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
+.ma-legend { padding: 12px 14px; border-top: 1px solid var(--border-subtle); background: var(--bg-overlay); }
+.ma-legend-title { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 9px; }
+.ma-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
 .ma-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.ma-rule { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-subtle); font-size: 10px; color: var(--text-tertiary); line-height: 1.6; }
+.ma-rule { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--border-subtle); font-size: 10px; color: var(--text-tertiary); line-height: 1.6; }
+
+/* TWO-COL GRID */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* COUNTDOWN TIMER */
+.countdown-chip {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-tertiary);
+  background: var(--bg-overlay); border: 1px solid var(--border-subtle);
+  padding: 3px 8px; border-radius: 4px;
+}
 
 /* FOOTER */
 .report-footer {
   text-align: center; padding: 20px; color: var(--text-tertiary); font-size: 10px;
-  letter-spacing: 1.5px; border-top: 1px solid var(--border-subtle); margin-top: 40px;
+  letter-spacing: 1.5px; border-top: 1px solid var(--border-subtle); margin-top: 36px;
 }
 
-/* TWO-COL ANALYSIS */
-.bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-@media (max-width: 960px) {
-  .action-zone { grid-template-columns: 1fr; }
-  .thesis-grid { grid-template-columns: 1fr; }
+@media (max-width: 1024px) {
   .market-bar { grid-template-columns: 1fr 1fr; }
   .market-bar-trend { grid-column: span 2; }
-  .bottom-grid { grid-template-columns: 1fr; }
 }
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .action-zone, .two-col, .thesis-grid { grid-template-columns: 1fr; }
   #main { padding: 14px; }
-  .market-bar { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -344,7 +414,7 @@ body {
     <div class="modal-title">Anthropic API Key</div>
     <div class="modal-sub">
       Enter your Anthropic API key to run the market agent.
-      Saved locally in your browser only &mdash; sent directly to <span>Anthropic</span>, nowhere else.<br><br>
+      Saved in your browser only &mdash; sent directly to <span>Anthropic</span>, nowhere else.<br><br>
       Get your key at <span>console.anthropic.com</span> under API Keys.
     </div>
     <input class="modal-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..." />
@@ -363,8 +433,10 @@ body {
     </div>
   </div>
   <div class="topbar-right">
+    <div id="live-pill" class="live-pill paused">Standby</div>
     <div id="clock">--:-- -- ET</div>
-    <button id="run-btn" onclick="runAgent()">Refresh</button>
+    <button class="tb-btn" onclick="showKeyModal()">API Key</button>
+    <button id="run-btn" class="tb-btn primary" onclick="runAgent()" style="display:none">Refresh Now</button>
   </div>
 </div>
 
@@ -379,17 +451,17 @@ body {
   <div id="landing">
     <div class="landing-eyebrow">Fidelity 401K &bull; Not Financial Advice</div>
     <div class="landing-title">Your Market Rulebook,<br>Running on Autopilot</div>
-    <div class="landing-sub">Tier 1 forever holds, Tier 2 war trades, stop-limit alerts, and bottom pivot signals &mdash; all checked against your rulebook automatically.</div>
+    <div class="landing-sub">Live prices every 60 seconds. News every 5 minutes. Full rulebook analysis every 30 minutes. All checked against your investment rules automatically.</div>
     <button class="landing-btn" onclick="runAgent()">Run Morning Report</button>
     <br>
     <button class="key-btn" onclick="showKeyModal()">Enter / Reset API Key</button>
     <div class="rule-chips">
+      <div class="rule-chip">Live Prices 60s</div>
+      <div class="rule-chip">News Headlines 5min</div>
+      <div class="rule-chip">Analysis 30min</div>
       <div class="rule-chip">Falling Knife Rule</div>
       <div class="rule-chip">MA Entry Hierarchy</div>
-      <div class="rule-chip">Bottom Pivot Rule</div>
-      <div class="rule-chip">Triple Witching Rule</div>
       <div class="rule-chip">Tier 1 Untouchable</div>
-      <div class="rule-chip">Tier 2 War Trades</div>
     </div>
   </div>
 
@@ -403,15 +475,49 @@ body {
 
   <div id="report">
     <div class="report-meta">
-      <div class="report-date" id="report-ts"></div>
-      <button class="key-btn" onclick="showKeyModal()">Reset API Key</button>
+      <div>
+        <div class="report-date" id="report-ts"></div>
+        <div class="refresh-info" id="refresh-info" style="margin-top:3px;"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="countdown-chip" id="analysis-countdown">Next analysis: --:--</span>
+        <span class="countdown-chip" id="news-countdown">News: --:--</span>
+        <span class="countdown-chip" id="price-countdown">Prices: --s</span>
+      </div>
     </div>
+
+    <!-- LIVE PRICE BAR -->
+    <div id="price-bar">
+      <div class="price-bar-label">Live</div>
+      <div class="price-loading">Fetching live prices...</div>
+      <div id="price-updated"></div>
+    </div>
+
+    <!-- REPORT BODY -->
     <div id="report-body"></div>
+
+    <!-- NEWS SECTION -->
+    <div class="section" id="news-section">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Market News</div>
+          <div class="section-title">Headlines &mdash; Updated Every 5 Minutes</div>
+        </div>
+        <div id="news-updated" class="section-meta"></div>
+      </div>
+      <div id="news-grid" class="news-grid">
+        <div class="news-loading">Fetching headlines...</div>
+      </div>
+    </div>
+
   </div>
 
 </div>
 
 <script>
+// ================================================================
+// PORTFOLIO
+// ================================================================
 var PORTFOLIO = {
   tier1: [
     { sym: "SPY",  shares: 7.042,  avgCost: 621.79 },
@@ -435,12 +541,24 @@ var PORTFOLIO = {
   cash: 5463.27
 };
 
+// All tickers to track live prices
+var ALL_TICKERS = ["SPY","QQQ","VGT","DIA","IWM","SCHD","XLK","XOP","XLE","GLD","SLV","GDX","CRAK","DRLL","XLU"];
+
+// ================================================================
+// TIMERS + STATE
+// ================================================================
+var priceInterval, newsInterval, analysisInterval, countdownInterval;
+var nextAnalysis = null, nextNews = null, nextPrice = null;
+var lastPrices = {};
+var isRunning = false;
+
+// ================================================================
 // PASSWORD
+// ================================================================
 (function() {
   var HASH = '206da79a0c59c78c50b1c88518af40b3e06a0316a5d9a85864202cfbf42c3006';
   function sha256(str) {
-    var enc = new TextEncoder();
-    return crypto.subtle.digest('SHA-256', enc.encode(str)).then(function(buf) {
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function(buf) {
       return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
     });
   }
@@ -468,15 +586,20 @@ var PORTFOLIO = {
   });
 })();
 
+// ================================================================
 // CLOCK
+// ================================================================
 function updateClock() {
-  var et = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).format(new Date());
-  document.getElementById('clock').textContent = et + ' ET';
+  document.getElementById('clock').textContent = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+  }).format(new Date()) + ' ET';
 }
 updateClock();
 setInterval(updateClock, 1000);
 
+// ================================================================
 // TRIPLE WITCHING
+// ================================================================
 function isTripleWitching() {
   var et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
   if (et.getDay() !== 5) return false;
@@ -485,7 +608,9 @@ function isTripleWitching() {
 }
 if (isTripleWitching()) document.getElementById('tw-banner').style.display = 'block';
 
+// ================================================================
 // API KEY
+// ================================================================
 function getApiKey() { return localStorage.getItem('anthropic_api_key') || ''; }
 function showKeyModal() {
   document.getElementById('api-key-input').value = '';
@@ -503,8 +628,178 @@ function checkApiKey() {
   return true;
 }
 
+// ================================================================
+// COUNTDOWN DISPLAY
+// ================================================================
+function formatCountdown(ms) {
+  if (ms <= 0) return '00:00';
+  var s = Math.floor(ms / 1000);
+  var m = Math.floor(s / 60);
+  s = s % 60;
+  return (m > 0 ? m + ':' : '') + String(s).padStart(2,'0');
+}
+
+function startCountdowns() {
+  countdownInterval = setInterval(function() {
+    var now = Date.now();
+    if (nextAnalysis) {
+      var a = nextAnalysis - now;
+      document.getElementById('analysis-countdown').textContent = 'Analysis: ' + formatCountdown(a);
+    }
+    if (nextNews) {
+      var n = nextNews - now;
+      document.getElementById('news-countdown').textContent = 'News: ' + formatCountdown(n);
+    }
+    if (nextPrice) {
+      var p = nextPrice - now;
+      document.getElementById('price-countdown').textContent = 'Prices: ' + Math.max(0, Math.ceil(p/1000)) + 's';
+    }
+  }, 1000);
+}
+
+// ================================================================
+// LIVE PRICES via Yahoo Finance + CORS proxy
+// ================================================================
+async function fetchLivePrices() {
+  var syms = ALL_TICKERS.join('%2C');
+  var url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + syms + '&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent';
+  var proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+
+  try {
+    var res = await fetch(proxy);
+    var data = await res.json();
+    var parsed = JSON.parse(data.contents);
+    var quotes = parsed.quoteResponse.result;
+    var prices = {};
+    quotes.forEach(function(q) {
+      prices[q.symbol] = {
+        price: q.regularMarketPrice,
+        change: q.regularMarketChange,
+        pct: q.regularMarketChangePercent
+      };
+    });
+    renderPriceBar(prices);
+    lastPrices = prices;
+    nextPrice = Date.now() + 60000;
+  } catch(e) {
+    console.warn('Price fetch failed:', e.message);
+    document.getElementById('price-updated').textContent = 'Price update failed';
+  }
+}
+
+function renderPriceBar(prices) {
+  var bar = document.getElementById('price-bar');
+  var now = new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: true });
+  var html = '<div class="price-bar-label">Live</div>';
+
+  ALL_TICKERS.forEach(function(sym) {
+    var d = prices[sym];
+    if (!d) return;
+    var isUp = d.change >= 0;
+    var cls = d.change > 0 ? 'up' : d.change < 0 ? 'dn' : 'fl';
+    var sign = d.change > 0 ? '+' : '';
+    var flashClass = '';
+    if (lastPrices[sym]) {
+      if (d.price > lastPrices[sym].price) flashClass = 'flash-up';
+      else if (d.price < lastPrices[sym].price) flashClass = 'flash-dn';
+    }
+    html += '<div class="price-item ' + flashClass + '">';
+    html += '<div class="price-sym">' + sym + '</div>';
+    html += '<div class="price-val">' + d.price.toFixed(2) + '</div>';
+    html += '<div class="price-chg ' + cls + '">' + sign + d.pct.toFixed(2) + '%</div>';
+    html += '</div>';
+  });
+
+  html += '<div id="price-updated" style="font-size:10px;color:var(--text-tertiary);margin-left:auto;flex-shrink:0;padding-left:16px;">Updated ' + now + '</div>';
+  bar.innerHTML = html;
+}
+
+// ================================================================
+// NEWS via RSS feeds
+// ================================================================
+var RSS_FEEDS = [
+  { url: 'https://feeds.finance.yahoo.com/rss/2.0/headline?s=SPY,QQQ,GLD,XLE&region=US&lang=en-US', source: 'Yahoo Finance' },
+  { url: 'https://feeds.marketwatch.com/marketwatch/marketpulse/', source: 'MarketWatch' },
+  { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664', source: 'CNBC Markets' },
+  { url: 'https://feeds.a.dj.com/rss/RSSMarketsMain.xml', source: 'WSJ Markets' }
+];
+
+async function fetchNews() {
+  var allItems = [];
+
+  for (var i = 0; i < RSS_FEEDS.length; i++) {
+    var feed = RSS_FEEDS[i];
+    try {
+      var proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feed.url);
+      var res = await fetch(proxy);
+      var data = await res.json();
+      var parser = new DOMParser();
+      var xml = parser.parseFromString(data.contents, 'text/xml');
+      var items = xml.querySelectorAll('item');
+      var count = 0;
+      items.forEach(function(item) {
+        if (count >= 3) return;
+        var title = item.querySelector('title');
+        var link = item.querySelector('link');
+        var pubDate = item.querySelector('pubDate');
+        if (title && title.textContent.trim()) {
+          allItems.push({
+            headline: title.textContent.trim(),
+            url: link ? link.textContent.trim() : '#',
+            source: feed.source,
+            time: pubDate ? new Date(pubDate.textContent) : new Date()
+          });
+          count++;
+        }
+      });
+    } catch(e) {
+      console.warn('News feed failed:', feed.source, e.message);
+    }
+  }
+
+  allItems.sort(function(a, b) { return b.time - a.time; });
+  renderNews(allItems.slice(0, 8));
+  nextNews = Date.now() + 300000;
+}
+
+function renderNews(items) {
+  var now = new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: true });
+  document.getElementById('news-updated').textContent = 'Updated ' + now + ' ET';
+
+  if (!items || items.length === 0) {
+    document.getElementById('news-grid').innerHTML = '<div class="news-loading">No headlines available right now. Will retry in 5 minutes.</div>';
+    return;
+  }
+
+  var html = '';
+  items.forEach(function(item) {
+    var timeStr = '';
+    try {
+      var diff = Math.floor((Date.now() - item.time) / 60000);
+      timeStr = diff < 1 ? 'Just now' : diff < 60 ? diff + 'm ago' : Math.floor(diff/60) + 'h ago';
+    } catch(e) { timeStr = ''; }
+
+    html += '<div class="news-item" onclick="window.open(\'' + item.url.replace(/'/g,"\\'") + '\',\'_blank\')">';
+    html += '<div class="news-source">' + item.source + '</div>';
+    html += '<div class="news-headline">' + item.headline + '</div>';
+    html += '<div class="news-time">' + timeStr + '</div>';
+    html += '</div>';
+  });
+  document.getElementById('news-grid').innerHTML = html;
+}
+
+// ================================================================
 // LOADER
-var loaderMsgs = ['Checking falling knife signals...','Scanning moving averages...','Evaluating stop-limit proximity...','Applying Tier 1 and Tier 2 rules...','Checking thesis status...','Reviewing bottom pivot signals...','Building rulebook analysis...'];
+// ================================================================
+var loaderMsgs = [
+  'Checking falling knife signals...',
+  'Scanning moving averages...',
+  'Evaluating stop-limit proximity...',
+  'Applying Tier 1 and Tier 2 rules...',
+  'Checking thesis status...',
+  'Reviewing bottom pivot signals...',
+  'Building rulebook analysis...'
+];
 var loaderIdx = 0, loaderTimer;
 function startLoader() {
   loaderIdx = 0;
@@ -516,22 +811,33 @@ function startLoader() {
 }
 function stopLoader() { clearInterval(loaderTimer); }
 
-// RUN
+// ================================================================
+// MAIN RUN
+// ================================================================
 async function runAgent() {
   if (!checkApiKey()) return;
-  document.getElementById('landing').style.display = 'none';
-  document.getElementById('report').style.display = 'none';
-  document.getElementById('error-msg').style.display = 'none';
-  document.getElementById('loading').style.display = 'block';
-  document.getElementById('run-btn').disabled = true;
-  startLoader();
 
-  var twNote = isTripleWitching() ? '\n\nTODAY IS TRIPLE WITCHING FRIDAY. Widen all stop gaps to $2-3. Flag this in priority actions.' : '';
-  var port = 'TIER 1 (UNTOUCHABLE):\n' + PORTFOLIO.tier1.map(function(p) { return '- ' + p.sym + ': ' + p.shares + ' shares @ $' + p.avgCost; }).join('\n') +
-    '\n\nTIER 2:\n' + PORTFOLIO.tier2.map(function(p) { return '- ' + p.sym + ': ' + p.shares + ' shares @ $' + p.avgCost + (p.stop ? ', stop $' + p.stop : ''); }).join('\n') +
+  var isFirstRun = !isRunning;
+  isRunning = true;
+
+  if (isFirstRun) {
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('error-msg').style.display = 'none';
+    document.getElementById('report').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    startLoader();
+  }
+
+  document.getElementById('run-btn').disabled = true;
+
+  var twNote = isTripleWitching() ? '\n\nTODAY IS TRIPLE WITCHING FRIDAY. Widen all stop gaps to $2-3. Flag this prominently.' : '';
+  var port = 'TIER 1 (UNTOUCHABLE):\n' +
+    PORTFOLIO.tier1.map(function(p) { return '- ' + p.sym + ': ' + p.shares + ' shares @ $' + p.avgCost; }).join('\n') +
+    '\n\nTIER 2:\n' +
+    PORTFOLIO.tier2.map(function(p) { return '- ' + p.sym + ': ' + p.shares + ' shares @ $' + p.avgCost + (p.stop ? ', stop $' + p.stop : ''); }).join('\n') +
     '\n\nCash: $' + PORTFOLIO.cash + twNote;
 
-  var prompt = 'You are an Investment Rulebook Agent. Return ONLY valid JSON, no markdown, no backticks, no text outside the JSON.\n\nPORTFOLIO:\n' + port + '\n\nRULES:\n1. Tier 1 (SPY,QQQ,VGT,DIA,IWM,SCHD,XLK) = UNTOUCHABLE forever.\n2. Tier 2 = War Trades, trim freely when thesis ends.\n3. Never buy a falling knife (price below all 4 MAs).\n4. MA: Yellow=9day, Blue=13day, White=20day, Red=50day. Ideal = bounce through 20-day.\n5. Only enter after confirmed bottom pivot reversal candle on above-average volume.\n6. Stop gap = $1 normally, $2-3 on Triple Witching.\n\nTHESIS: Energy intact while oil over $80. Metals intact while gold strong. Defense (SHLD,PPA) both stopped out March 20, watching for re-entry pivot.\n\nReturn exactly:\n{"market_summary":{"headline":"one sentence","vix_note":"brief VIX context","broad_trend":"bullish or bearish or mixed","key_level":"key S&P level to watch"},"tier1_status":[{"sym":"SPY","verdict":"HOLD FOREVER","ma_signal":"brief MA note","note":"brief note","action":"HOLD"}],"tier2_status":[{"sym":"XOP","verdict":"INTACT","price_vs_stop":"safe or near stop or stop triggered","stop_pct":"percent distance","note":"brief","action":"HOLD"}],"stop_alerts":[{"sym":"XOP","urgency":"safe or watch or alert or critical","stop":171.00,"note":"brief"}],"thesis_check":{"energy":{"status":"INTACT","reason":"brief"},"metals":{"status":"INTACT","reason":"brief"},"defense":{"status":"EXIT","reason":"brief"}},"priority_actions":[{"priority":1,"action":"action text","type":"BUY or SELL or HOLD or WATCH or ALERT"}],"analysis":"2-3 paragraphs. Reference rules by name. End with one strategic reminder.","watchlist":[{"sym":"XLV","signal":"STAY OUT or WATCH or ENTRY","note":"brief"}]}';
+  var prompt = 'You are an Investment Rulebook Agent. Return ONLY valid JSON, no markdown, no backticks.\n\nPORTFOLIO:\n' + port + '\n\nRULES:\n1. Tier 1 (SPY,QQQ,VGT,DIA,IWM,SCHD,XLK) = UNTOUCHABLE forever.\n2. Tier 2 = War Trades, trim freely when thesis ends.\n3. Never buy a falling knife (price below all 4 MAs).\n4. MAs: Yellow=9day, Blue=13day, White=20day, Red=50day. Ideal = bounce through 20-day with 50-day below.\n5. Only enter after confirmed bottom pivot reversal candle on above-average volume.\n6. Stop gap = $1 normally, $2-3 on Triple Witching.\n\nTHESIS: Energy intact while oil over $80. Metals intact while gold strong. Defense (SHLD,PPA) both stopped out March 20, watching for re-entry pivot.\n\nReturn exactly this structure:\n{"market_summary":{"headline":"one sentence","vix_note":"brief","broad_trend":"bullish or bearish or mixed","key_level":"key S&P level"},"tier1_status":[{"sym":"SPY","verdict":"HOLD FOREVER","ma_signal":"brief","note":"brief","action":"HOLD"}],"tier2_status":[{"sym":"XOP","verdict":"INTACT","price_vs_stop":"safe or near stop or stop triggered","stop_pct":"percent distance","note":"brief","action":"HOLD"}],"stop_alerts":[{"sym":"XOP","urgency":"safe or watch or alert or critical","stop":171.00,"note":"brief"}],"thesis_check":{"energy":{"status":"INTACT","reason":"brief"},"metals":{"status":"INTACT","reason":"brief"},"defense":{"status":"EXIT","reason":"brief"}},"priority_actions":[{"priority":1,"action":"text","type":"BUY or SELL or HOLD or WATCH or ALERT"}],"analysis":"2-3 paragraphs referencing rules by name. End with one strategic reminder.","watchlist":[{"sym":"XLV","signal":"STAY OUT or WATCH or ENTRY","note":"brief"}]}';
 
   try {
     var res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -548,27 +854,65 @@ async function runAgent() {
     var raw = (data.content || []).find(function(b) { return b.type === 'text'; });
     if (!raw) throw new Error('No text in response. Check API key.');
     var report = JSON.parse(raw.text.replace(/```json|```/g,'').trim());
+
     stopLoader();
+    document.getElementById('loading').style.display = 'none';
     renderReport(report);
+
+    // Set next analysis timer
+    nextAnalysis = Date.now() + 1800000; // 30 min
+    analysisInterval = setTimeout(function() { runAgent(); }, 1800000);
+
+    // Start live prices and news if first run
+    if (isFirstRun) {
+      await fetchLivePrices();
+      await fetchNews();
+      priceInterval = setInterval(fetchLivePrices, 60000);
+      nextPrice = Date.now() + 60000;
+      newsInterval = setInterval(fetchNews, 300000);
+      nextNews = Date.now() + 300000;
+      startCountdowns();
+    }
+
+    // Update live pill
+    var pill = document.getElementById('live-pill');
+    pill.className = 'live-pill';
+    pill.textContent = 'Live';
+
+    document.getElementById('report').style.display = 'block';
+    document.getElementById('run-btn').style.display = 'inline-block';
+
+    // Update refresh info
+    var nextTime = new Date(Date.now() + 1800000).toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: true });
+    document.getElementById('refresh-info').textContent = 'Next analysis at ' + nextTime + ' ET';
+
   } catch(e) {
     stopLoader();
     document.getElementById('loading').style.display = 'none';
     var el = document.getElementById('error-msg');
     el.style.display = 'block';
-    el.innerHTML = '<strong>Agent error:</strong> ' + e.message + '<br><br>Open Safari console (Develop &gt; Show JavaScript Console) for details.';
+    el.innerHTML = '<strong>Agent error:</strong> ' + e.message + '<br><br>Open Develop &gt; Show JavaScript Console for details.';
     console.error(e);
+    isRunning = false;
   }
+
   document.getElementById('run-btn').style.display = 'inline-block';
   document.getElementById('run-btn').disabled = false;
 }
 
-// RENDER
+// ================================================================
+// RENDER REPORT
+// ================================================================
 function renderReport(r) {
-  document.getElementById('loading').style.display = 'none';
-  var ts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date());
+  var ts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York', weekday: 'long', month: 'long',
+    day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+  }).format(new Date());
   document.getElementById('report-ts').textContent = 'Generated ' + ts + ' ET';
 
-  var trendColor = r.market_summary.broad_trend === 'bullish' ? 'var(--positive)' : r.market_summary.broad_trend === 'bearish' ? 'var(--negative)' : 'var(--warning)';
+  var trendColor = r.market_summary.broad_trend === 'bullish' ? 'var(--positive)' :
+                   r.market_summary.broad_trend === 'bearish' ? 'var(--negative)' : 'var(--warning)';
+
   function tc(s) { return s === 'INTACT' ? 'var(--positive)' : s === 'CAUTION' ? 'var(--warning)' : 'var(--negative)'; }
   function ub(u) {
     if (u === 'critical') return '<span class="badge badge-critical">Critical</span>';
@@ -578,7 +922,7 @@ function renderReport(r) {
   }
   function urc(u) { return u === 'critical' ? 'row-critical' : u === 'alert' ? 'row-warn' : ''; }
   function ab(t) {
-    var m = { BUY:'badge-buy', SELL:'badge-sell', TRIM:'badge-trim', ALERT:'badge-critical', WATCH:'badge-watch', HOLD:'badge-hold' };
+    var m = { BUY:'badge-buy',SELL:'badge-sell',TRIM:'badge-trim',ALERT:'badge-critical',WATCH:'badge-watch',HOLD:'badge-hold' };
     return '<span class="badge ' + (m[t] || 'badge-hold') + '">' + t + '</span>';
   }
   function vb(v) {
@@ -596,21 +940,21 @@ function renderReport(r) {
 
   // MARKET BAR
   h += '<div class="section">';
-  h += '<div class="section-label">Market Overview</div>';
+  h += '<div class="section-label" style="margin-bottom:10px;">Market Overview</div>';
   h += '<div class="market-bar">';
-  h += '<div class="market-bar-trend"><div><div class="mbc-label">Trend</div><div class="trend-value" style="color:' + trendColor + '">' + r.market_summary.broad_trend.toUpperCase() + '</div><div class="mbc-note" style="margin-top:5px;">' + r.market_summary.headline + '</div></div></div>';
+  h += '<div class="market-bar-trend"><div class="trend-label">Trend</div><div class="trend-value" style="color:' + trendColor + '">' + r.market_summary.broad_trend.toUpperCase() + '</div><div class="trend-headline">' + r.market_summary.headline + '</div></div>';
   h += '<div class="market-bar-cell"><div class="mbc-label">Key Level</div><div class="mbc-value">' + r.market_summary.key_level + '</div><div class="mbc-note">S&P 500 watch zone</div></div>';
-  h += '<div class="market-bar-cell"><div class="mbc-label">VIX</div><div class="mbc-value">' + r.market_summary.vix_note + '</div></div>';
-  h += '<div class="market-bar-cell"><div class="mbc-label">Cash</div><div class="mbc-value" style="color:var(--gold-text)">$' + PORTFOLIO.cash.toLocaleString() + '</div><div class="mbc-note">Deploy cash only, not Tier 1</div></div>';
+  h += '<div class="market-bar-cell"><div class="mbc-label">VIX Context</div><div class="mbc-value" style="font-size:11px;line-height:1.4;">' + r.market_summary.vix_note + '</div></div>';
+  h += '<div class="market-bar-cell"><div class="mbc-label">Cash</div><div class="mbc-value" style="color:var(--gold-text)">$' + PORTFOLIO.cash.toLocaleString() + '</div><div class="mbc-note">Cash only, never Tier 1</div></div>';
   h += '<div class="market-bar-cell"><div class="mbc-label">Thesis Health</div><div class="mbc-value" style="color:' + healthColor + '">' + healthLabel + '</div><div class="mbc-note">Energy / Metals / Defense</div></div>';
   h += '</div></div>';
 
   // ALERTS + ACTIONS
   h += '<div class="section">';
-  h += '<div class="section-label">Action Required</div>';
+  h += '<div class="section-label" style="margin-bottom:10px;">Action Required</div>';
   h += '<div class="action-zone">';
 
-  h += '<div class="card"><div class="card-header"><div class="card-accent" style="background:var(--negative)"></div><div class="card-title">Stop-Limit Alerts</div></div>';
+  h += '<div class="card"><div class="card-header"><div class="card-header-left"><div class="card-accent" style="background:var(--negative)"></div><div class="card-title">Stop-Limit Alerts</div></div></div>';
   h += '<table class="data-table"><thead><tr><th>Symbol</th><th>Stop</th><th>Status</th><th>Note</th></tr></thead><tbody>';
   r.stop_alerts.forEach(function(a) {
     h += '<tr class="' + urc(a.urgency) + '"><td><span class="ticker">' + a.sym + '</span></td>';
@@ -619,7 +963,7 @@ function renderReport(r) {
   });
   h += '</tbody></table></div>';
 
-  h += '<div class="card"><div class="card-header"><div class="card-accent" style="background:var(--gold)"></div><div class="card-title">Priority Actions</div></div>';
+  h += '<div class="card"><div class="card-header"><div class="card-header-left"><div class="card-accent" style="background:var(--gold)"></div><div class="card-title">Priority Actions</div></div></div>';
   h += '<div class="priority-list">';
   r.priority_actions.forEach(function(a) {
     h += '<div class="priority-item"><div class="priority-num">' + a.priority + '</div><div class="priority-text">' + ab(a.type) + ' ' + a.action + '</div></div>';
@@ -627,7 +971,7 @@ function renderReport(r) {
   h += '</div></div></div></div>';
 
   // THESIS
-  h += '<div class="section"><div class="section-label">Trade Thesis</div>';
+  h += '<div class="section"><div class="section-label" style="margin-bottom:10px;">Trade Thesis</div>';
   h += '<div class="card"><div class="thesis-grid">';
   [['energy','Energy'],['metals','Metals'],['defense','Defense']].forEach(function(t) {
     var th = r.thesis_check[t[0]];
@@ -636,7 +980,7 @@ function renderReport(r) {
   h += '</div></div></div>';
 
   // TIER 1
-  h += '<div class="section"><div class="section-label">Tier 1 Holdings</div><div class="section-title">Forever Holds &mdash; Untouchable</div>';
+  h += '<div class="section"><div class="section-label">Tier 1 Holdings</div><div class="section-title" style="margin-bottom:10px;">Forever Holds &mdash; Untouchable</div>';
   h += '<div class="card"><table class="data-table"><thead><tr><th>Symbol</th><th>Shares</th><th>Avg Cost</th><th>MA Signal</th><th>Verdict</th><th>Action</th><th>Note</th></tr></thead><tbody>';
   r.tier1_status.forEach(function(s, i) {
     var p = PORTFOLIO.tier1[i] || {};
@@ -651,7 +995,7 @@ function renderReport(r) {
   h += '</tbody></table></div></div>';
 
   // TIER 2
-  h += '<div class="section"><div class="section-label">Tier 2 Holdings</div><div class="section-title">War Trades &mdash; Trim Freely When Thesis Ends</div>';
+  h += '<div class="section"><div class="section-label">Tier 2 Holdings</div><div class="section-title" style="margin-bottom:10px;">War Trades &mdash; Trim Freely When Thesis Ends</div>';
   h += '<div class="card"><table class="data-table"><thead><tr><th>Symbol</th><th>Shares</th><th>Avg Cost</th><th>Stop</th><th>Thesis</th><th>Proximity</th><th>Action</th><th>Note</th></tr></thead><tbody>';
   r.tier2_status.forEach(function(s) {
     var p = PORTFOLIO.tier2.find(function(x) { return x.sym === s.sym; }) || {};
@@ -668,15 +1012,16 @@ function renderReport(r) {
   h += '</tbody></table></div></div>';
 
   // ANALYSIS + WATCHLIST
-  h += '<div class="section"><div class="bottom-grid">';
-
-  h += '<div><div class="section-label">Rulebook Analysis</div>';
+  h += '<div class="section"><div class="two-col">';
+  h += '<div><div class="section-label" style="margin-bottom:8px;">Rulebook Analysis</div>';
   h += '<div class="card"><div class="analysis-body">' + r.analysis.replace(/\n/g,'<br><br>') + '</div></div></div>';
 
-  h += '<div><div class="section-label">Watchlist</div>';
-  h += '<div class="card" style="margin-bottom:16px;"><table class="data-table"><thead><tr><th>Symbol</th><th>Signal</th><th>Note</th></tr></thead><tbody>';
+  h += '<div><div class="section-label" style="margin-bottom:8px;">Watchlist</div>';
+  h += '<div class="card" style="margin-bottom:14px;"><table class="data-table"><thead><tr><th>Symbol</th><th>Signal</th><th>Note</th></tr></thead><tbody>';
   r.watchlist.forEach(function(w) {
-    var sig = w.signal === 'ENTRY' ? '<span class="badge badge-buy">Entry</span>' : w.signal === 'WATCH' ? '<span class="badge badge-watch">Watch</span>' : '<span class="badge badge-exit">Stay Out</span>';
+    var sig = w.signal === 'ENTRY' ? '<span class="badge badge-buy">Entry</span>' :
+              w.signal === 'WATCH' ? '<span class="badge badge-watch">Watch</span>' :
+              '<span class="badge badge-exit">Stay Out</span>';
     h += '<tr><td><span class="ticker">' + w.sym + '</span></td><td>' + sig + '</td><td class="cell-muted">' + w.note + '</td></tr>';
   });
   h += '</tbody></table>';
@@ -692,8 +1037,6 @@ function renderReport(r) {
   h += '<div class="report-footer">Not Financial Advice &bull; Personal Reference Only &bull; Always Verify in Fidelity Before Trading</div>';
 
   document.getElementById('report-body').innerHTML = h;
-  document.getElementById('report').style.display = 'block';
-  document.getElementById('run-btn').style.display = 'inline-block';
 }
 </script>
 </body>
