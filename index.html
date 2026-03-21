@@ -5,704 +5,450 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Investment Rulebook Agent</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
-
-  :root {
-    --bg: #141920;
-    --bg2: #1C2330;
-    --bg3: #232D3F;
-    --bg4: #2A3650;
-    --border: #2E3C52;
-    --gold: #C9A84C;
-    --gold2: #A6863C;
-    --green: #2EAA6E;
-    --red: #C0444A;
-    --amber: #C97C2A;
-    --blue: #4A7FB5;
-    --text: #B8C4D4;
-    --muted: #6B7A90;
-    --white: #D6E0EE;
-    --ma-yellow: #C9A84C;
-    --ma-blue: #4A7FB5;
-    --ma-white: #B8C4D4;
-    --ma-red: #C0444A;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    min-height: 100vh;
-  }
-
-  /* SCANLINE EFFECT */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px);
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* TOP BAR */
-  #topbar {
-    background: linear-gradient(135deg, #141920 0%, #1C2330 100%);
-    border-bottom: 2px solid var(--gold);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--gold);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-  }
-
-  .logo-text {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 600;
-    font-size: 15px;
-    color: var(--white);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .logo-sub {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-family: 'IBM Plex Mono', monospace;
-  }
-
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  #clock {
-    color: var(--gold);
-    font-size: 13px;
-    letter-spacing: 1px;
-  }
-
-  #run-btn {
-    background: var(--gold);
-    color: #0A0B0F;
-    border: none;
-    padding: 8px 20px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-  }
-
-  #run-btn:hover { background: #FFD060; transform: translateY(-1px); }
-  #run-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-  /* TRIPLE WITCHING BANNER */
-  #tw-banner {
-    background: linear-gradient(90deg, #8B2020, #8B4A1A);
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 1px;
-    display: none;
-  }
-
-  /* MAIN LAYOUT */
-  #main {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 24px;
-  }
-
-  /* LOADING STATE */
-  #loading {
-    display: none;
-    text-align: center;
-    padding: 80px 20px;
-    color: var(--muted);
-  }
-
-  .loader-bar {
-    width: 300px;
-    height: 2px;
-    background: var(--border);
-    margin: 20px auto;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .loader-bar::after {
-    content: '';
-    display: block;
-    height: 100%;
-    width: 40%;
-    background: var(--gold);
-    border-radius: 2px;
-    opacity: 0.8;
-    animation: slide 1.2s ease-in-out infinite;
-  }
-
-  @keyframes slide {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(350%); }
-  }
-
-  .loader-msg { font-size: 12px; letter-spacing: 2px; animation: blink 1s step-end infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-
-  /* LANDING STATE */
-  #landing {
-    text-align: center;
-    padding: 100px 20px;
-  }
-
-  .landing-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 3px;
-    margin-bottom: 12px;
-  }
-
-  .landing-sub { color: var(--muted); font-size: 13px; margin-bottom: 40px; letter-spacing: 1px; }
-
-  .landing-btn {
-    background: var(--gold);
-    color: #0A0B0F;
-    border: none;
-    padding: 16px 40px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.2);
-  }
-
-  .landing-btn:hover { background: #FFD060; transform: translateY(-2px); box-shadow: 0 4px 24px rgba(201, 168, 76, 0.3); }
-
-  /* API KEY MODAL */
-  #api-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-  }
-  #api-modal.show { display: flex; }
-  .modal-box {
-    background: var(--bg2);
-    border: 1px solid var(--gold);
-    border-radius: 8px;
-    padding: 32px;
-    width: 480px;
-    max-width: 90vw;
-  }
-  .modal-title { color: var(--gold); font-size: 14px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
-  .modal-sub { color: var(--muted); font-size: 11px; line-height: 1.7; margin-bottom: 20px; }
-  .modal-input {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    padding: 10px 12px;
-    border-radius: 4px;
-    margin-bottom: 12px;
-    outline: none;
-  }
-  .modal-input:focus { border-color: var(--gold); }
-  .modal-btn {
-    background: var(--gold);
-    color: #0A0B0F;
-    border: none;
-    padding: 10px 24px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border-radius: 4px;
-    width: 100%;
-  }
-  .modal-btn:hover { background: #FFD060; }
-  .modal-note { color: var(--muted); font-size: 10px; margin-top: 10px; text-align: center; }
-
-  .rules-preview {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 60px;
-    flex-wrap: wrap;
-  }
-
-  .rule-chip {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1px;
-  }
-
-  /* REPORT OUTPUT */
-  #report {
-    display: none;
-    animation: fadeIn 0.4s ease;
-  }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* STAT CARDS ROW */
-  .stat-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
-  .stat-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--gold);
-  }
-
-  .stat-card.green::before { background: var(--green); }
-  .stat-card.red::before { background: var(--red); }
-  .stat-card.amber::before { background: var(--amber); }
-  .stat-card.blue::before { background: var(--blue); }
-
-  .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-  .stat-value { font-size: 22px; font-weight: 700; color: var(--white); }
-  .stat-change { font-size: 11px; margin-top: 4px; }
-  .up { color: var(--green); }
-  .down { color: var(--red); }
-  .neutral { color: var(--muted); }
-
-  /* SECTION PANELS */
-  .panels {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  .panels.full { grid-template-columns: 1fr; }
-  .panels.thirds { grid-template-columns: 1fr 1fr 1fr; }
-
-  .panel {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .panel-header {
-    background: var(--bg3);
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-
-  .panel-body { padding: 0; }
-
-  /* TABLES */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-
-  thead tr { background: var(--bg4); }
-  thead th {
-    padding: 8px 12px;
-    text-align: left;
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 600;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-
-  tbody tr {
-    border-bottom: 1px solid rgba(42, 47, 69, 0.5);
-    transition: background 0.15s;
-  }
-
-  tbody tr:hover { background: rgba(255,255,255,0.02); }
-  tbody tr:last-child { border-bottom: none; }
-
-  tbody td {
-    padding: 9px 12px;
-    white-space: nowrap;
-  }
-
-  .sym {
-    font-weight: 700;
-    color: var(--white);
-    font-size: 13px;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .badge-t1 { background: rgba(74,127,181,0.18); color: #7AA8D4; border: 1px solid rgba(74,127,181,0.28); }
-  .badge-t2 { background: rgba(201,124,42,0.18); color: #C9903A; border: 1px solid rgba(201,124,42,0.28); }
-  .badge-alert { background: rgba(192,68,74,0.18); color: #D46E72; border: 1px solid rgba(192,68,74,0.28); }
-  .badge-ok { background: rgba(46,170,110,0.18); color: #4EC48A; border: 1px solid rgba(46,170,110,0.28); }
-  .badge-watch { background: rgba(201,168,76,0.18); color: #C9A84C; border: 1px solid rgba(201,168,76,0.28); }
-
-  .tag-stop { color: var(--red); font-weight: 600; }
-  .tag-buy { color: var(--green); font-weight: 600; }
-
-  /* MA DOTS */
-  .ma-dot {
-    display: inline-block;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    margin-right: 3px;
-  }
-
-  .ma-y { background: var(--ma-yellow); }
-  .ma-b { background: var(--ma-blue); }
-  .ma-w { background: var(--ma-white); }
-  .ma-r { background: var(--ma-red); }
-
-  /* ALERT ROW */
-  .row-alert { background: rgba(192,68,74,0.08) !important; }
-  .row-warn { background: rgba(201,124,42,0.08) !important; }
-  .row-good { background: rgba(46,170,110,0.06) !important; }
-  .row-t1 { background: rgba(74,127,181,0.06) !important; }
-
-  /* TEXT SECTION */
-  .text-section {
-    padding: 16px;
-    line-height: 1.8;
-    font-size: 12px;
-    color: var(--text);
-  }
-
-  .text-section p { margin-bottom: 8px; }
-  .text-section .highlight { color: var(--gold); font-weight: 600; }
-  .text-section .action-item { color: var(--green); }
-  .text-section .warning-item { color: var(--amber); }
-  .text-section .danger-item { color: var(--red); }
-
-  /* ANALYSIS BLOCK */
-  .analysis-block {
-    padding: 16px;
-    border-left: 3px solid var(--gold);
-    background: rgba(201,168,76,0.06);
-    margin: 16px;
-    border-radius: 0 4px 4px 0;
-    font-size: 12px;
-    line-height: 1.8;
-  }
-
-  /* PRIORITY LIST */
-  .priority-list { padding: 12px 16px; }
-  .priority-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(42,47,69,0.5);
-  }
-  .priority-item:last-child { border-bottom: none; }
-  .priority-num {
-    background: var(--gold);
-    color: #0A0B0F;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px;
-    font-weight: 800;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .priority-text { font-size: 12px; line-height: 1.5; }
-
-  /* TIMESTAMP */
-  .report-timestamp {
-    text-align: right;
-    color: var(--muted);
-    font-size: 10px;
-    letter-spacing: 1px;
-    padding: 8px 0 16px;
-  }
-
-  /* THESIS STATUS */
-  .thesis-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0;
-  }
-
-  .thesis-cell {
-    padding: 16px;
-    border-right: 1px solid var(--border);
-    text-align: center;
-  }
-
-  .thesis-cell:last-child { border-right: none; }
-  .thesis-name { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
-  .thesis-status { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-  .thesis-detail { font-size: 10px; color: var(--muted); line-height: 1.5; }
-
-  /* ERROR */
-  #error-msg {
-    display: none;
-    background: rgba(255,90,90,0.1);
-    border: 1px solid var(--red);
-    color: var(--red);
-    padding: 20px;
-    border-radius: 6px;
-    text-align: center;
-    margin: 40px auto;
-    max-width: 500px;
-  }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  @media (max-width: 900px) {
-    .panels { grid-template-columns: 1fr; }
-    .panels.thirds { grid-template-columns: 1fr; }
-    .thesis-grid { grid-template-columns: 1fr; }
-    .thesis-cell { border-right: none; border-bottom: 1px solid var(--border); }
-  }
-
-  /* PASSWORD GATE */
-  #password-gate {
-    position: fixed;
-    inset: 0;
-    background: #141920;
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .gate-box {
-    background: #1C2330;
-    border: 1px solid #F0C040;
-    border-radius: 8px;
-    padding: 40px;
-    width: 400px;
-    max-width: 90vw;
-    text-align: center;
-  }
-  .gate-logo { font-size: 40px; margin-bottom: 16px; }
-  .gate-title { color: #F0C040; font-size: 14px; font-weight: 700; letter-spacing: 3px; margin-bottom: 6px; }
-  .gate-sub { color: #8890B0; font-size: 11px; letter-spacing: 1px; margin-bottom: 28px; }
-  .gate-input {
-    width: 100%;
-    background: #232D3F;
-    border: 1px solid #2A2F45;
-    color: #D8DCF0;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 14px;
-    padding: 12px 16px;
-    border-radius: 4px;
-    margin-bottom: 12px;
-    outline: none;
-    text-align: center;
-    letter-spacing: 3px;
-  }
-  .gate-input:focus { border-color: #F0C040; }
-  .gate-btn {
-    width: 100%;
-    background: #F0C040;
-    color: #0A0B0F;
-    border: none;
-    padding: 12px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-bottom: 10px;
-  }
-  .gate-btn:hover { background: #FFD060; }
-  .gate-error { color: #FF5A5A; font-size: 11px; margin-top: 8px; display: none; }
-
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg-base:    #13161D;
+  --bg-raised:  #1A1E28;
+  --bg-overlay: #202534;
+  --bg-sunken:  #0F1118;
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-soft:   rgba(255,255,255,0.10);
+  --border-gold:   rgba(196,158,60,0.40);
+  --gold:       #C49E3C;
+  --gold-dim:   rgba(196,158,60,0.12);
+  --gold-text:  #D4AE52;
+  --positive:   #3A9E6E;
+  --positive-bg: rgba(58,158,110,0.10);
+  --negative:   #A84040;
+  --negative-bg: rgba(168,64,64,0.10);
+  --warning:    #B87830;
+  --warning-bg: rgba(184,120,48,0.10);
+  --info:       #3A6EA8;
+  --info-bg:    rgba(58,110,168,0.10);
+  --text-primary:   #C8D4E8;
+  --text-secondary: #7A8AA8;
+  --text-tertiary:  #4A5A78;
+  --text-emphasis:  #E0EAF8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* PASSWORD GATE */
+#password-gate {
+  position: fixed; inset: 0;
+  background: var(--bg-sunken);
+  z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+}
+.gate-box {
+  background: var(--bg-raised);
+  border: 1px solid var(--border-gold);
+  border-radius: 10px;
+  padding: 40px; width: 380px; max-width: 90vw; text-align: center;
+}
+.gate-icon { font-size: 32px; margin-bottom: 16px; }
+.gate-title { font-size: 16px; font-weight: 700; color: var(--text-emphasis); margin-bottom: 4px; }
+.gate-sub { font-size: 10px; color: var(--text-tertiary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; }
+.gate-input {
+  width: 100%; background: var(--bg-sunken); border: 1px solid var(--border-soft);
+  color: var(--text-primary); font-family: 'IBM Plex Mono', monospace; font-size: 14px;
+  padding: 11px 16px; border-radius: 6px; margin-bottom: 10px; outline: none;
+  text-align: center; letter-spacing: 2px; transition: border-color 0.2s;
+}
+.gate-input:focus { border-color: var(--gold); }
+.gate-btn {
+  width: 100%; background: var(--gold); color: #0A0C10; border: none;
+  padding: 11px; font-family: 'IBM Plex Sans', sans-serif; font-weight: 600;
+  font-size: 13px; cursor: pointer; border-radius: 6px; transition: background 0.2s;
+}
+.gate-btn:hover { background: #D4AE52; }
+.gate-error { color: var(--negative); font-size: 11px; margin-top: 8px; display: none; }
+
+/* TOP BAR */
+#topbar {
+  background: var(--bg-raised); border-bottom: 1px solid var(--border-gold);
+  padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark {
+  width: 32px; height: 32px; background: var(--gold-dim);
+  border: 1px solid var(--border-gold); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.logo-text { font-size: 11px; font-weight: 700; color: var(--text-emphasis); letter-spacing: 2px; text-transform: uppercase; }
+.logo-sub { font-size: 10px; color: var(--text-tertiary); margin-top: 1px; }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+#clock { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--gold-text); letter-spacing: 1px; }
+#run-btn {
+  background: var(--gold); color: #0A0C10; border: none; padding: 7px 16px;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 11px;
+  cursor: pointer; border-radius: 6px; transition: background 0.2s; display: none;
+}
+#run-btn:hover { background: #D4AE52; }
+#run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* TRIPLE WITCHING */
+#tw-banner {
+  display: none; background: var(--warning-bg);
+  border-bottom: 1px solid rgba(184,120,48,0.2);
+  padding: 8px 24px; font-size: 11px; font-weight: 500;
+  color: var(--warning); letter-spacing: 0.5px; text-align: center;
+}
+
+/* API MODAL */
+#api-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,12,16,0.88); z-index: 1000;
+  align-items: center; justify-content: center;
+}
+#api-modal.show { display: flex; }
+.modal-box {
+  background: var(--bg-raised); border: 1px solid var(--border-gold);
+  border-radius: 10px; padding: 36px; width: 460px; max-width: 90vw;
+}
+.modal-title { font-size: 16px; font-weight: 700; color: var(--text-emphasis); margin-bottom: 10px; }
+.modal-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; }
+.modal-sub span { color: var(--gold-text); }
+.modal-input {
+  width: 100%; background: var(--bg-sunken); border: 1px solid var(--border-soft);
+  color: var(--text-primary); font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+  padding: 10px 14px; border-radius: 6px; margin-bottom: 10px; outline: none; transition: border-color 0.2s;
+}
+.modal-input:focus { border-color: var(--gold); }
+.modal-btn {
+  width: 100%; background: var(--gold); color: #0A0C10; border: none; padding: 11px;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 13px;
+  cursor: pointer; border-radius: 6px; transition: background 0.2s;
+}
+.modal-btn:hover { background: #D4AE52; }
+.modal-note { color: var(--text-tertiary); font-size: 10px; margin-top: 10px; text-align: center; }
+
+/* MAIN */
+#main { max-width: 1360px; margin: 0 auto; padding: 24px; }
+
+/* LANDING */
+#landing {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 72vh; text-align: center; padding: 40px 24px;
+}
+.landing-eyebrow { font-size: 10px; font-weight: 600; color: var(--gold-text); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; }
+.landing-title { font-size: 28px; font-weight: 700; color: var(--text-emphasis); letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.2; }
+.landing-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 36px; max-width: 460px; line-height: 1.65; }
+.landing-btn {
+  background: var(--gold); color: #0A0C10; border: none; padding: 13px 36px;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 14px;
+  cursor: pointer; border-radius: 6px; transition: background 0.2s, transform 0.15s; margin-bottom: 10px;
+}
+.landing-btn:hover { background: #D4AE52; transform: translateY(-1px); }
+.key-btn {
+  background: transparent; border: 1px solid var(--border-soft); color: var(--text-secondary);
+  padding: 8px 18px; font-family: 'IBM Plex Sans', sans-serif; font-size: 11px;
+  cursor: pointer; border-radius: 6px; transition: border-color 0.2s, color 0.2s;
+}
+.key-btn:hover { border-color: var(--gold); color: var(--gold-text); }
+.rule-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 40px; max-width: 540px; }
+.rule-chip { background: var(--bg-overlay); border: 1px solid var(--border-subtle); padding: 5px 12px; border-radius: 20px; font-size: 10px; color: var(--text-tertiary); }
+
+/* LOADING */
+#loading { display: none; text-align: center; padding: 100px 24px; }
+.loading-label { font-size: 11px; font-weight: 600; color: var(--gold-text); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+.loader-track { width: 240px; height: 2px; background: var(--border-subtle); margin: 0 auto 16px; border-radius: 2px; overflow: hidden; }
+.loader-track::after {
+  content: ''; display: block; height: 100%; width: 35%; background: var(--gold);
+  border-radius: 2px; animation: scan 1.4s ease-in-out infinite;
+}
+@keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(380%); } }
+.loader-msg { font-size: 11px; color: var(--text-tertiary); letter-spacing: 1px; animation: fade 1s step-end infinite; }
+@keyframes fade { 50% { opacity: 0.2; } }
+
+/* ERROR */
+#error-msg {
+  display: none; background: var(--negative-bg); border: 1px solid rgba(168,64,64,0.3);
+  color: #B06060; padding: 20px; border-radius: 6px; text-align: center;
+  margin: 40px auto; max-width: 480px; font-size: 13px; line-height: 1.6;
+}
+
+/* REPORT */
+#report { display: none; animation: appear 0.3s ease; }
+@keyframes appear { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+.report-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0 24px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 28px;
+}
+.report-date { font-size: 11px; color: var(--text-tertiary); }
+
+/* SECTIONS */
+.section { margin-bottom: 36px; }
+.section-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.section-title { font-size: 15px; font-weight: 600; color: var(--text-emphasis); margin-bottom: 14px; }
+
+/* MARKET BAR */
+.market-bar {
+  display: grid; grid-template-columns: auto 1fr 1fr 1fr 1fr;
+  gap: 1px; background: var(--border-subtle);
+  border: 1px solid var(--border-subtle); border-radius: 8px; overflow: hidden;
+}
+.market-bar-trend {
+  background: var(--bg-overlay); padding: 18px 22px;
+  display: flex; align-items: center; min-width: 180px;
+}
+.trend-value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
+.market-bar-cell { background: var(--bg-raised); padding: 14px 16px; }
+.mbc-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; }
+.mbc-value { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text-emphasis); margin-bottom: 3px; }
+.mbc-note { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+
+/* ACTION ZONE */
+.action-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 36px; }
+
+/* CARDS */
+.card { background: var(--bg-raised); border: 1px solid var(--border-subtle); border-radius: 8px; overflow: hidden; }
+.card-header {
+  padding: 11px 16px; border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center;
+}
+.card-accent { width: 3px; height: 14px; border-radius: 2px; margin-right: 10px; flex-shrink: 0; }
+.card-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* TABLES */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table thead tr { background: var(--bg-overlay); }
+.data-table thead th {
+  padding: 7px 14px; font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+  letter-spacing: 1px; text-transform: uppercase; text-align: left;
+  border-bottom: 1px solid var(--border-subtle); white-space: nowrap;
+}
+.data-table tbody tr { border-bottom: 1px solid var(--border-subtle); transition: background 0.1s; }
+.data-table tbody tr:last-child { border-bottom: none; }
+.data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.data-table tbody td { padding: 9px 14px; font-size: 13px; vertical-align: middle; }
+
+.row-critical { border-left: 2px solid var(--negative); }
+.row-warn { border-left: 2px solid var(--warning); }
+.row-t1 { border-left: 2px solid var(--info); }
+
+.ticker { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text-emphasis); }
+.data-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text-primary); }
+.data-num.neg { color: #B06060; }
+.cell-muted { font-size: 11px; color: var(--text-secondary); line-height: 1.45; }
+
+/* BADGES */
+.badge {
+  display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 3px;
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap;
+}
+.badge-critical { background: rgba(168,64,64,0.12); color: #C07070; border: 1px solid rgba(168,64,64,0.28); }
+.badge-alert    { background: rgba(184,120,48,0.12); color: #C09050; border: 1px solid rgba(184,120,48,0.28); }
+.badge-watch    { background: var(--gold-dim);        color: var(--gold-text); border: 1px solid var(--border-gold); }
+.badge-safe     { background: rgba(58,158,110,0.10);  color: #509070; border: 1px solid rgba(58,158,110,0.28); }
+.badge-t1       { background: rgba(58,110,168,0.10);  color: #5080A8; border: 1px solid rgba(58,110,168,0.28); }
+.badge-t2       { background: rgba(184,120,48,0.10);  color: #A08050; border: 1px solid rgba(184,120,48,0.22); }
+.badge-intact   { background: rgba(58,158,110,0.10);  color: #509070; border: 1px solid rgba(58,158,110,0.28); }
+.badge-caution  { background: rgba(184,120,48,0.12);  color: #C09050; border: 1px solid rgba(184,120,48,0.28); }
+.badge-exit     { background: rgba(168,64,64,0.12);   color: #C07070; border: 1px solid rgba(168,64,64,0.28); }
+.badge-hold     { background: rgba(58,110,168,0.10);  color: #5080A8; border: 1px solid rgba(58,110,168,0.28); }
+.badge-sell     { background: rgba(168,64,64,0.12);   color: #C07070; border: 1px solid rgba(168,64,64,0.28); }
+.badge-buy      { background: rgba(58,158,110,0.10);  color: #509070; border: 1px solid rgba(58,158,110,0.28); }
+.badge-trim     { background: rgba(184,120,48,0.12);  color: #C09050; border: 1px solid rgba(184,120,48,0.28); }
+
+/* THESIS */
+.thesis-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border-subtle); }
+.thesis-cell { background: var(--bg-raised); padding: 18px 16px; }
+.thesis-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+.thesis-status { font-size: 17px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
+.thesis-reason { font-size: 11px; color: var(--text-secondary); line-height: 1.55; }
+
+/* PRIORITY */
+.priority-list { padding: 4px 0; }
+.priority-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 10px 16px; border-bottom: 1px solid var(--border-subtle);
+}
+.priority-item:last-child { border-bottom: none; }
+.priority-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gold-dim); border: 1px solid var(--border-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700;
+  color: var(--gold-text); flex-shrink: 0; margin-top: 1px;
+}
+.priority-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* ANALYSIS */
+.analysis-body {
+  padding: 18px 20px; font-size: 13px; color: var(--text-primary); line-height: 1.8;
+  border-left: 3px solid var(--border-gold); background: var(--gold-dim);
+  margin: 14px; border-radius: 0 6px 6px 0;
+}
+
+/* MA LEGEND */
+.ma-legend { padding: 14px 16px; border-top: 1px solid var(--border-subtle); background: var(--bg-overlay); }
+.ma-legend-title { font-size: 10px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+.ma-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
+.ma-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.ma-rule { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-subtle); font-size: 10px; color: var(--text-tertiary); line-height: 1.6; }
+
+/* FOOTER */
+.report-footer {
+  text-align: center; padding: 20px; color: var(--text-tertiary); font-size: 10px;
+  letter-spacing: 1.5px; border-top: 1px solid var(--border-subtle); margin-top: 40px;
+}
+
+/* TWO-COL ANALYSIS */
+.bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+@media (max-width: 960px) {
+  .action-zone { grid-template-columns: 1fr; }
+  .thesis-grid { grid-template-columns: 1fr; }
+  .market-bar { grid-template-columns: 1fr 1fr; }
+  .market-bar-trend { grid-column: span 2; }
+  .bottom-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  #main { padding: 14px; }
+  .market-bar { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
 
-
 <!-- PASSWORD GATE -->
 <div id="password-gate">
   <div class="gate-box">
-    <div class="gate-logo">📊</div>
-    <div class="gate-title">INVESTMENT RULEBOOK AGENT</div>
-    <div class="gate-sub">PRIVATE ACCESS ONLY</div>
+    <div class="gate-icon">📊</div>
+    <div class="gate-title">Investment Rulebook Agent</div>
+    <div class="gate-sub">Private Access</div>
     <input class="gate-input" id="gate-input" type="password" placeholder="Enter password" />
-    <button class="gate-btn" onclick="checkPassword()">UNLOCK</button>
+    <button class="gate-btn" onclick="checkPassword()">Unlock</button>
     <div class="gate-error" id="gate-error">Incorrect password. Try again.</div>
-  </div>
-</div>
-
-<!-- TOP BAR -->
-<div id="topbar">
-  <div class="logo">
-    <div class="logo-icon">📊</div>
-    <div>
-      <div class="logo-text">Investment Rulebook Agent</div>
-      <div class="logo-sub">Tier 1 · Tier 2 · Stop-Limits · Pivots</div>
-    </div>
-  </div>
-  <div class="topbar-right">
-    <div id="clock">--:-- -- ET</div>
-    <button id="run-btn" onclick="runAgent()" style="display:none">⟳ Refresh</button>
   </div>
 </div>
 
 <!-- API KEY MODAL -->
 <div id="api-modal">
   <div class="modal-box">
-    <div class="modal-title">🔑 ANTHROPIC API KEY</div>
+    <div class="modal-title">Anthropic API Key</div>
     <div class="modal-sub">
-      Enter your Anthropic API key to run the market agent.<br>
-      It's saved locally in your browser — never sent anywhere except directly to Anthropic.<br><br>
-      Get your key at: <span style="color:var(--gold)">console.anthropic.com</span> → API Keys
+      Enter your Anthropic API key to run the market agent.
+      Saved locally in your browser only &mdash; sent directly to <span>Anthropic</span>, nowhere else.<br><br>
+      Get your key at <span>console.anthropic.com</span> under API Keys.
     </div>
     <input class="modal-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..." />
-    <button class="modal-btn" onclick="saveApiKey()">SAVE & RUN REPORT</button>
-    <div class="modal-note">Stored in localStorage — only you can access it</div>
+    <button class="modal-btn" onclick="saveApiKey()">Save &amp; Run Report</button>
+    <div class="modal-note">Stored in localStorage &mdash; only accessible to you</div>
   </div>
 </div>
 
-<!-- TRIPLE WITCHING BANNER -->
-<div id="tw-banner">⚠️ TRIPLE WITCHING FRIDAY — Widen ALL stop-limit gaps to $2–$3 today. Resume normal $1 gap Monday.</div>
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="logo">
+    <div class="logo-mark">📊</div>
+    <div>
+      <div class="logo-text">Investment Rulebook Agent</div>
+      <div class="logo-sub">Fidelity 401K BrokerageLink &bull; Not Financial Advice</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div id="clock">--:-- -- ET</div>
+    <button id="run-btn" onclick="runAgent()">Refresh</button>
+  </div>
+</div>
+
+<!-- TRIPLE WITCHING NOTICE -->
+<div id="tw-banner">
+  Triple Witching Friday &mdash; Widen all stop-limit gaps to $2&ndash;$3 today. Resume normal $1 gap Monday.
+</div>
 
 <!-- MAIN -->
 <div id="main">
 
-  <!-- LANDING -->
   <div id="landing">
-    <div class="landing-title">📊 MARKET AGENT</div>
-    <div class="landing-sub">INVESTMENT RULEBOOK //FIDELITY 401K BROKERAGELINK //NOT FINANCIAL ADVICE</div>
-    <button class="landing-btn" onclick="runAgent()"> RUN MORNING REPORT</button>
-    <div style="margin-top:16px;">
-      <button onclick="showKeyModal()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;border-radius:4px;letter-spacing:1px;">🔑 ENTER / RESET API KEY</button>
-    </div>
-    <div class="rules-preview">
-      <div class="rule-chip">🔴 Falling Knife Rule</div>
-      <div class="rule-chip">⚪ MA Entry Hierarchy</div>
-      <div class="rule-chip">📍 Bottom Pivot Rule</div>
-      <div class="rule-chip">⚡ Triple Witching Rule</div>
-      <div class="rule-chip">🛡️ Tier 1 Untouchable</div>
-      <div class="rule-chip">⚔️ Tier 2 War Trades</div>
+    <div class="landing-eyebrow">Fidelity 401K &bull; Not Financial Advice</div>
+    <div class="landing-title">Your Market Rulebook,<br>Running on Autopilot</div>
+    <div class="landing-sub">Tier 1 forever holds, Tier 2 war trades, stop-limit alerts, and bottom pivot signals &mdash; all checked against your rulebook automatically.</div>
+    <button class="landing-btn" onclick="runAgent()">Run Morning Report</button>
+    <br>
+    <button class="key-btn" onclick="showKeyModal()">Enter / Reset API Key</button>
+    <div class="rule-chips">
+      <div class="rule-chip">Falling Knife Rule</div>
+      <div class="rule-chip">MA Entry Hierarchy</div>
+      <div class="rule-chip">Bottom Pivot Rule</div>
+      <div class="rule-chip">Triple Witching Rule</div>
+      <div class="rule-chip">Tier 1 Untouchable</div>
+      <div class="rule-chip">Tier 2 War Trades</div>
     </div>
   </div>
 
-  <!-- LOADING -->
   <div id="loading">
-    <div style="font-size:13px; color: var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Analyzing Portfolio</div>
-    <div class="loader-bar"></div>
+    <div class="loading-label">Analyzing Portfolio</div>
+    <div class="loader-track"></div>
     <div class="loader-msg" id="loader-msg">Fetching market data...</div>
   </div>
 
-  <!-- ERROR -->
   <div id="error-msg"></div>
 
-  <!-- REPORT -->
   <div id="report">
-    <div class="report-timestamp" id="report-ts"></div>
-    <!-- injected by JS -->
+    <div class="report-meta">
+      <div class="report-date" id="report-ts"></div>
+      <button class="key-btn" onclick="showKeyModal()">Reset API Key</button>
+    </div>
+    <div id="report-body"></div>
   </div>
 
 </div>
 
 <script>
+var PORTFOLIO = {
+  tier1: [
+    { sym: "SPY",  shares: 7.042,  avgCost: 621.79 },
+    { sym: "QQQ",  shares: 3.017,  avgCost: 501.08 },
+    { sym: "VGT",  shares: 2.016,  avgCost: 587.76 },
+    { sym: "DIA",  shares: 5.065,  avgCost: 415.25 },
+    { sym: "IWM",  shares: 4.045,  avgCost: 204.34 },
+    { sym: "SCHD", shares: 37.148, avgCost: 30.19  },
+    { sym: "XLK",  shares: 4.043,  avgCost: 111.55 }
+  ],
+  tier2: [
+    { sym: "XOP",  shares: 5,  avgCost: 167.18, stop: 171.00, limit: 170.00 },
+    { sym: "XLE",  shares: 8,  avgCost: 56.91,  stop: 56.50,  limit: 55.50  },
+    { sym: "GLD",  shares: 8,  avgCost: 401.36, stop: 409.00, limit: 408.00 },
+    { sym: "SLV",  shares: 10, avgCost: 84.79,  stop: 59.00,  limit: 58.00  },
+    { sym: "GDX",  shares: 5,  avgCost: 105.49, stop: 79.00,  limit: 78.00  },
+    { sym: "CRAK", shares: 3,  avgCost: 47.38,  stop: 46.50,  limit: 45.50  },
+    { sym: "DRLL", shares: 4,  avgCost: 35.87,  stop: 35.50,  limit: 34.50  },
+    { sym: "XLU",  shares: 6,  avgCost: 47.30,  stop: null,   limit: null   }
+  ],
+  cash: 5463.27
+};
 
-// PASSWORD GATE
+// PASSWORD
 (function() {
-  var HASH = '206da79a0c59c78c50b1c88518af40b3e06a0316a5d9a85864202cfbf42c3006'; // 'password' - change this
-
+  var HASH = '206da79a0c59c78c50b1c88518af40b3e06a0316a5d9a85864202cfbf42c3006';
   function sha256(str) {
-    // Simple hash check using SubtleCrypto
-    var encoder = new TextEncoder();
-    var data = encoder.encode(str);
-    return crypto.subtle.digest('SHA-256', data).then(function(buf) {
-      return Array.from(new Uint8Array(buf)).map(function(b) {
-        return b.toString(16).padStart(2, '0');
-      }).join('');
+    var enc = new TextEncoder();
+    return crypto.subtle.digest('SHA-256', enc.encode(str)).then(function(buf) {
+      return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
     });
   }
-
   window.checkPassword = function() {
     var val = document.getElementById('gate-input').value;
-    sha256(val).then(function(hash) {
-      if (hash === HASH) {
-        sessionStorage.setItem('unlocked', '1');
+    sha256(val).then(function(h) {
+      if (h === HASH) {
+        sessionStorage.setItem('unlocked','1');
         document.getElementById('password-gate').style.display = 'none';
       } else {
         document.getElementById('gate-error').style.display = 'block';
@@ -711,148 +457,66 @@
       }
     });
   };
-
   window.addEventListener('DOMContentLoaded', function() {
     if (sessionStorage.getItem('unlocked') === '1') {
       document.getElementById('password-gate').style.display = 'none';
     }
-    var input = document.getElementById('gate-input');
-    if (input) {
-      input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') window.checkPassword();
-      });
-      input.focus();
-    }
+    var g = document.getElementById('gate-input');
+    if (g) g.addEventListener('keydown', function(e) { if (e.key === 'Enter') window.checkPassword(); });
+    var a = document.getElementById('api-key-input');
+    if (a) a.addEventListener('keydown', function(e) { if (e.key === 'Enter') saveApiKey(); });
   });
 })();
 
-// CONFIG 
-const PORTFOLIO = {
-  tier1: [
-    { sym: "SPY",  shares: 7.042, avgCost: 621.79, note: "S&P 500" },
-    { sym: "QQQ",  shares: 3.017, avgCost: 501.08, note: "Nasdaq 100" },
-    { sym: "VGT",  shares: 2.016, avgCost: 587.76, note: "Info Tech" },
-    { sym: "DIA",  shares: 5.065, avgCost: 415.25, note: "Dow Jones" },
-    { sym: "IWM",  shares: 4.045, avgCost: 204.34, note: "Russell 2000" },
-    { sym: "SCHD", shares: 37.148, avgCost: 30.19, note: "Dividend" },
-    { sym: "XLK",  shares: 4.043, avgCost: 111.55, note: "Tech Sector" },
-  ],
-  tier2: [
-    { sym: "XOP",  shares: 5,  avgCost: 167.18, stop: 171.00, limit: 170.00, note: "Energy (trail)" },
-    { sym: "XLE",  shares: 8,  avgCost: 56.91,  stop: 56.50,  limit: 55.50,  note: "Energy" },
-    { sym: "GLD",  shares: 8,  avgCost: 401.36, stop: 409.00, limit: 408.00, note: "Gold (trail, 4 protected)" },
-    { sym: "SLV",  shares: 10, avgCost: 84.79,  stop: 59.00,  limit: 58.00,  note: "Silver" },
-    { sym: "GDX",  shares: 5,  avgCost: 105.49, stop: 79.00,  limit: 78.00,  note: "Gold Miners (5 kept)" },
-    { sym: "CRAK", shares: 3,  avgCost: 47.38,  stop: 46.50,  limit: 45.50,  note: "Oil Refining" },
-    { sym: "DRLL", shares: 4,  avgCost: 35.87,  stop: 35.50,  limit: 34.50,  note: "US Energy" },
-    { sym: "XLU",  shares: 6,  avgCost: 47.30,  stop: null,   limit: null,   note: "Utilities (watching)" },
-  ],
-  cash: 5463.27,
-};
-
-const STOPS = [
-  { sym: "XOP",  stop: 171.00, limit: 170.00, type: "TRAIL" },
-  { sym: "XLE",  stop: 56.50,  limit: 55.50,  type: "HARD" },
-  { sym: "GLD",  stop: 409.00, limit: 408.00, type: "TRAIL" },
-  { sym: "SLV",  stop: 59.00,  limit: 58.00,  type: "HARD" },
-  { sym: "GDX",  stop: 79.00,  limit: 78.00,  type: "HARD" },
-  { sym: "CRAK", stop: 46.50,  limit: 45.50,  type: "HARD" },
-  { sym: "DRLL", stop: 35.50,  limit: 34.50,  type: "HARD" },
-];
-
-// API KEY 
-function getApiKey() {
-  return localStorage.getItem('anthropic_api_key') || '';
-}
-
-function showKeyModal() {
-  document.getElementById('api-key-input').value = '';
-  document.getElementById('api-modal').classList.add('show');
-}
-
-function saveApiKey() {
-  const key = document.getElementById('api-key-input').value.trim();
-  if (!key.startsWith('sk-')) {
-    alert('That doesn\'t look like a valid API key. It should start with sk-ant-...');
-    return;
-  }
-  localStorage.setItem('anthropic_api_key', key);
-  document.getElementById('api-modal').classList.remove('show');
-  runAgent();
-}
-
-function checkApiKey() {
-  const key = getApiKey();
-  if (!key || key.length < 20) {
-    showKeyModal();
-    return false;
-  }
-  return true;
-}
-
-//Allow Enter key in modal - wait for DOM
-window.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('api-key-input');
-  if (input) input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') saveApiKey();
-  });
-});
-
-
+// CLOCK
 function updateClock() {
-  const now = new Date();
-  const et = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/New_York',
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-    hour12: true
-  }).format(now);
+  var et = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).format(new Date());
   document.getElementById('clock').textContent = et + ' ET';
 }
 updateClock();
 setInterval(updateClock, 1000);
 
-// TRIPLE WITCHING CHECK 
+// TRIPLE WITCHING
 function isTripleWitching() {
-  const now = new Date();
-  const et = new Date(now.toLocaleString('en-US', {timeZone: 'America/New_York'}));
-  if (et.getDay() !== 5) return false; //Friday
-  const month = et.getMonth(); //0=Jan, 2=Mar, 5=Jun, 8=Sep, 11=Dec
-  if (![2,5,8,11].includes(month)) return false;
-  //Is it the 3rd Friday?
-  const day = et.getDate();
-  return day >= 15 && day <= 21;
+  var et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  if (et.getDay() !== 5) return false;
+  if (![2,5,8,11].includes(et.getMonth())) return false;
+  return et.getDate() >= 15 && et.getDate() <= 21;
+}
+if (isTripleWitching()) document.getElementById('tw-banner').style.display = 'block';
+
+// API KEY
+function getApiKey() { return localStorage.getItem('anthropic_api_key') || ''; }
+function showKeyModal() {
+  document.getElementById('api-key-input').value = '';
+  document.getElementById('api-modal').classList.add('show');
+}
+function saveApiKey() {
+  var key = document.getElementById('api-key-input').value.trim();
+  if (!key.startsWith('sk-')) { alert('Key should start with sk-ant-...'); return; }
+  localStorage.setItem('anthropic_api_key', key);
+  document.getElementById('api-modal').classList.remove('show');
+  runAgent();
+}
+function checkApiKey() {
+  if (!getApiKey() || getApiKey().length < 20) { showKeyModal(); return false; }
+  return true;
 }
 
-if (isTripleWitching()) {
-  document.getElementById('tw-banner').style.display = 'block';
-}
-
-// LOADER MESSAGES 
-const loaderMsgs = [
-  "Checking falling knife signals...",
-  "Scanning moving averages...",
-  "Evaluating bottom pivots...",
-  "Checking stop-limit proximity...",
-  "Applying Tier 1 / Tier 2 rules...",
-  "Analyzing thesis status...",
-  "Building report...",
-];
-
-let loaderIdx = 0;
-let loaderInterval;
-
+// LOADER
+var loaderMsgs = ['Checking falling knife signals...','Scanning moving averages...','Evaluating stop-limit proximity...','Applying Tier 1 and Tier 2 rules...','Checking thesis status...','Reviewing bottom pivot signals...','Building rulebook analysis...'];
+var loaderIdx = 0, loaderTimer;
 function startLoader() {
   loaderIdx = 0;
   document.getElementById('loader-msg').textContent = loaderMsgs[0];
-  loaderInterval = setInterval(() => {
+  loaderTimer = setInterval(function() {
     loaderIdx = (loaderIdx + 1) % loaderMsgs.length;
     document.getElementById('loader-msg').textContent = loaderMsgs[loaderIdx];
   }, 1800);
 }
+function stopLoader() { clearInterval(loaderTimer); }
 
-function stopLoader() { clearInterval(loaderInterval); }
-
-// MAIN RUN 
+// RUN
 async function runAgent() {
   if (!checkApiKey()) return;
   document.getElementById('landing').style.display = 'none';
@@ -862,373 +526,172 @@ async function runAgent() {
   document.getElementById('run-btn').disabled = true;
   startLoader();
 
-  const twNote = isTripleWitching() ? "\n\nWARNING TODAY IS TRIPLE WITCHING FRIDAY (3rd Friday of March/June/September/December). All stop-limit gaps should be widened to $2-3 today. Flag this prominently." : "";
+  var twNote = isTripleWitching() ? '\n\nTODAY IS TRIPLE WITCHING FRIDAY. Widen all stop gaps to $2-3. Flag this in priority actions.' : '';
+  var port = 'TIER 1 (UNTOUCHABLE):\n' + PORTFOLIO.tier1.map(function(p) { return '- ' + p.sym + ': ' + p.shares + ' shares @ $' + p.avgCost; }).join('\n') +
+    '\n\nTIER 2:\n' + PORTFOLIO.tier2.map(function(p) { return '- ' + p.sym + ': ' + p.shares + ' shares @ $' + p.avgCost + (p.stop ? ', stop $' + p.stop : ''); }).join('\n') +
+    '\n\nCash: $' + PORTFOLIO.cash + twNote;
 
-  const portfolioSummary = `
-TIER 1 (UNTOUCHABLE - never sell):
-${PORTFOLIO.tier1.map(p => `- ${p.sym}: ${p.shares} shares @ $${p.avgCost}/share avg cost`).join('\n')}
-
-TIER 2 (War Trades - trim freely when thesis ends):
-${PORTFOLIO.tier2.map(p => `- ${p.sym}: ${p.shares} shares @ $${p.avgCost}/share avg cost${p.stop ? `, stop at $${p.stop}` : ''}`).join('\n')}
-
-Cash available: $${PORTFOLIO.cash.toLocaleString()}
-
-ACTIVE STOP-LIMITS:
-${STOPS.map(s => `- ${s.sym}: Stop $${s.stop} / Limit $${s.limit} (${s.type})`).join('\n')}
-${twNote}`;
-
-  const prompt = `You are an Investment Rulebook Agent for a Fidelity 401K BrokerageLink account. You analyze the portfolio using strict rules and return a JSON report. Return ONLY valid JSON with no markdown, no backticks, no explanation outside the JSON.
-
-PORTFOLIO:
-${portfolioSummary}
-
-RULES (apply strictly):
-1. TIER 1 (SPY, QQQ, VGT, DIA, IWM, SCHD, XLK) = UNTOUCHABLE. Never sell, never trim, never use proceeds for Tier 2.
-2. TIER 2 = War Trades. Trim freely when thesis ends (ceasefire, oil < $80, gold breaks 50-day).
-3. FALLING KNIFE: Never recommend buying if price below ALL 4 MAs. Check MACD.
-4. MA COLORS: Yellow=9-day, Blue=13-day, White=20-day, Red=50-day. Ideal buy = bounce through 20-day with 50-day below.
-5. BOTTOM PIVOT: Only enter after confirmed reversal candle (hammer/engulfing green) on above-average volume + higher lows.
-6. STOP-LIMIT GAP: Normally $1. Triple Witching Fridays = $2-3.
-7. Never sell Tier 1 to fund anything. Cash funds new buys.
-
-THESIS STATUS:
-- Energy (XOP/XLE/CRAK/DRLL): Intact while oil > $80 and Middle East conflict ongoing
-- Metals (GLD/SLV/GDX): Intact while gold strong and Fed not cutting
-- Defense (SHLD/PPA): Both stopped out on Mar 20 Triple Witching. Watching for re-entry pivot.
-
-Return this exact JSON structure:
-{
-  "market_summary": {
-    "headline": "one sentence market summary",
-    "vix_note": "brief VIX context",
-    "broad_trend": "bullish|bearish|mixed",
-    "key_level": "one key S&P level to watch"
-  },
-  "tier1_status": [
-    {
-      "sym": "SPY",
-      "verdict": "HOLD FOREVER",
-      "ma_signal": "above all 4 MAs|above 20-day|below 20-day|falling knife",
-      "note": "brief note",
-      "action": "HOLD"
-    }
-  ],
-  "tier2_status": [
-    {
-      "sym": "XOP",
-      "verdict": "INTACT|CAUTION|THESIS ENDED",
-      "price_vs_stop": "safe|near stop|stop triggered",
-      "stop_pct": "% distance from stop",
-      "note": "brief note",
-      "action": "HOLD|TRIM|TRAIL STOP|SELL"
-    }
-  ],
-  "stop_alerts": [
-    {
-      "sym": "XOP",
-      "urgency": "safe|watch|alert|critical",
-      "current_price_est": "estimated from context",
-      "stop": 171.00,
-      "note": "brief alert note"
-    }
-  ],
-  "thesis_check": {
-    "energy": { "status": "INTACT|CAUTION|EXIT", "reason": "brief reason" },
-    "metals": { "status": "INTACT|CAUTION|EXIT", "reason": "brief reason" },
-    "defense": { "status": "INTACT|CAUTION|EXIT", "reason": "brief reason watching for pivot re-entry" }
-  },
-  "priority_actions": [
-    { "priority": 1, "action": "action text", "type": "BUY|SELL|HOLD|WATCH|ALERT" }
-  ],
-  "analysis": "2-3 paragraph rulebook-governed analysis. Be specific. Reference the rules. Note any falling knives, stop proximity, thesis changes, pivot signals. End with one key strategic reminder.",
-  "watchlist": [
-    { "sym": "XLV", "signal": "STAY OUT|WATCH|ENTRY", "note": "brief note" }
-  ]
-}`;
+  var prompt = 'You are an Investment Rulebook Agent. Return ONLY valid JSON, no markdown, no backticks, no text outside the JSON.\n\nPORTFOLIO:\n' + port + '\n\nRULES:\n1. Tier 1 (SPY,QQQ,VGT,DIA,IWM,SCHD,XLK) = UNTOUCHABLE forever.\n2. Tier 2 = War Trades, trim freely when thesis ends.\n3. Never buy a falling knife (price below all 4 MAs).\n4. MA: Yellow=9day, Blue=13day, White=20day, Red=50day. Ideal = bounce through 20-day.\n5. Only enter after confirmed bottom pivot reversal candle on above-average volume.\n6. Stop gap = $1 normally, $2-3 on Triple Witching.\n\nTHESIS: Energy intact while oil over $80. Metals intact while gold strong. Defense (SHLD,PPA) both stopped out March 20, watching for re-entry pivot.\n\nReturn exactly:\n{"market_summary":{"headline":"one sentence","vix_note":"brief VIX context","broad_trend":"bullish or bearish or mixed","key_level":"key S&P level to watch"},"tier1_status":[{"sym":"SPY","verdict":"HOLD FOREVER","ma_signal":"brief MA note","note":"brief note","action":"HOLD"}],"tier2_status":[{"sym":"XOP","verdict":"INTACT","price_vs_stop":"safe or near stop or stop triggered","stop_pct":"percent distance","note":"brief","action":"HOLD"}],"stop_alerts":[{"sym":"XOP","urgency":"safe or watch or alert or critical","stop":171.00,"note":"brief"}],"thesis_check":{"energy":{"status":"INTACT","reason":"brief"},"metals":{"status":"INTACT","reason":"brief"},"defense":{"status":"EXIT","reason":"brief"}},"priority_actions":[{"priority":1,"action":"action text","type":"BUY or SELL or HOLD or WATCH or ALERT"}],"analysis":"2-3 paragraphs. Reference rules by name. End with one strategic reminder.","watchlist":[{"sym":"XLV","signal":"STAY OUT or WATCH or ENTRY","note":"brief"}]}';
 
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "x-api-key": getApiKey(),
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
+        'Content-Type': 'application/json',
+        'x-api-key': getApiKey(),
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
       },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 4000,
-        messages: [{ role: "user", content: prompt }]
-      })
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] })
     });
-
-    const data = await res.json();
-    const raw = data.content?.find(b => b.type === "text")?.text || "";
-    const clean = raw.replace(/```json|```/g, "").trim();
-    const report = JSON.parse(clean);
-
+    var data = await res.json();
+    var raw = (data.content || []).find(function(b) { return b.type === 'text'; });
+    if (!raw) throw new Error('No text in response. Check API key.');
+    var report = JSON.parse(raw.text.replace(/```json|```/g,'').trim());
     stopLoader();
     renderReport(report);
   } catch(e) {
     stopLoader();
     document.getElementById('loading').style.display = 'none';
-    const errEl = document.getElementById('error-msg');
-    errEl.style.display = 'block';
-    errEl.textContent = "WARNING Agent error: " + e.message + ". Check console for details.";
+    var el = document.getElementById('error-msg');
+    el.style.display = 'block';
+    el.innerHTML = '<strong>Agent error:</strong> ' + e.message + '<br><br>Open Safari console (Develop &gt; Show JavaScript Console) for details.';
     console.error(e);
   }
-
   document.getElementById('run-btn').style.display = 'inline-block';
   document.getElementById('run-btn').disabled = false;
 }
 
-// RENDER 
+// RENDER
 function renderReport(r) {
   document.getElementById('loading').style.display = 'none';
+  var ts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date());
+  document.getElementById('report-ts').textContent = 'Generated ' + ts + ' ET';
 
-  const now = new Date();
-  const ts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/New_York',
-    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
-    hour: '2-digit', minute: '2-digit', hour12: true
-  }).format(now);
-  document.getElementById('report-ts').textContent = 'Generated: ' + ts + ' ET';
+  var trendColor = r.market_summary.broad_trend === 'bullish' ? 'var(--positive)' : r.market_summary.broad_trend === 'bearish' ? 'var(--negative)' : 'var(--warning)';
+  function tc(s) { return s === 'INTACT' ? 'var(--positive)' : s === 'CAUTION' ? 'var(--warning)' : 'var(--negative)'; }
+  function ub(u) {
+    if (u === 'critical') return '<span class="badge badge-critical">Critical</span>';
+    if (u === 'alert')    return '<span class="badge badge-alert">Alert</span>';
+    if (u === 'watch')    return '<span class="badge badge-watch">Watch</span>';
+    return '<span class="badge badge-safe">Safe</span>';
+  }
+  function urc(u) { return u === 'critical' ? 'row-critical' : u === 'alert' ? 'row-warn' : ''; }
+  function ab(t) {
+    var m = { BUY:'badge-buy', SELL:'badge-sell', TRIM:'badge-trim', ALERT:'badge-critical', WATCH:'badge-watch', HOLD:'badge-hold' };
+    return '<span class="badge ' + (m[t] || 'badge-hold') + '">' + t + '</span>';
+  }
+  function vb(v) {
+    if (v === 'INTACT')  return '<span class="badge badge-intact">Intact</span>';
+    if (v === 'CAUTION') return '<span class="badge badge-caution">Caution</span>';
+    return '<span class="badge badge-exit">Exit</span>';
+  }
 
-  const trendColor = r.market_summary.broad_trend === 'bullish' ? 'var(--green)' :
-                     r.market_summary.broad_trend === 'bearish' ? 'var(--red)' : 'var(--amber)';
+  var allIntact = ['energy','metals','defense'].every(function(k) { return r.thesis_check[k].status === 'INTACT'; });
+  var anyExit   = ['energy','metals','defense'].some(function(k)  { return r.thesis_check[k].status === 'EXIT'; });
+  var healthColor = allIntact ? 'var(--positive)' : anyExit ? 'var(--negative)' : 'var(--warning)';
+  var healthLabel = allIntact ? 'All Intact' : anyExit ? 'Review Needed' : 'Mixed';
 
-  // Thesis status colors
-  const thesisColor = (s) => s === 'INTACT' ? 'var(--green)' : s === 'CAUTION' ? 'var(--amber)' : 'var(--red)';
+  var h = '';
 
-  // Stop alert row class
-  const alertClass = (u) => u === 'critical' ? 'row-alert' : u === 'alert' ? 'row-warn' : '';
+  // MARKET BAR
+  h += '<div class="section">';
+  h += '<div class="section-label">Market Overview</div>';
+  h += '<div class="market-bar">';
+  h += '<div class="market-bar-trend"><div><div class="mbc-label">Trend</div><div class="trend-value" style="color:' + trendColor + '">' + r.market_summary.broad_trend.toUpperCase() + '</div><div class="mbc-note" style="margin-top:5px;">' + r.market_summary.headline + '</div></div></div>';
+  h += '<div class="market-bar-cell"><div class="mbc-label">Key Level</div><div class="mbc-value">' + r.market_summary.key_level + '</div><div class="mbc-note">S&P 500 watch zone</div></div>';
+  h += '<div class="market-bar-cell"><div class="mbc-label">VIX</div><div class="mbc-value">' + r.market_summary.vix_note + '</div></div>';
+  h += '<div class="market-bar-cell"><div class="mbc-label">Cash</div><div class="mbc-value" style="color:var(--gold-text)">$' + PORTFOLIO.cash.toLocaleString() + '</div><div class="mbc-note">Deploy cash only, not Tier 1</div></div>';
+  h += '<div class="market-bar-cell"><div class="mbc-label">Thesis Health</div><div class="mbc-value" style="color:' + healthColor + '">' + healthLabel + '</div><div class="mbc-note">Energy / Metals / Defense</div></div>';
+  h += '</div></div>';
 
-  // Tier2 action color
-  const t2color = (a) => a === 'SELL' ? 'var(--red)' : a === 'TRIM' ? 'var(--amber)' : a === 'HOLD' ? 'var(--green)' : 'var(--muted)';
+  // ALERTS + ACTIONS
+  h += '<div class="section">';
+  h += '<div class="section-label">Action Required</div>';
+  h += '<div class="action-zone">';
 
-  // Priority badge
-  const priBadge = (t) => {
-    if (t === 'BUY') return '<span class="badge badge-ok">BUY</span>';
-    if (t === 'SELL') return '<span class="badge badge-alert">SELL</span>';
-    if (t === 'ALERT') return '<span class="badge badge-alert">ALERT</span>';
-    if (t === 'WATCH') return '<span class="badge badge-watch">WATCH</span>';
-    return '<span class="badge badge-t1">HOLD</span>';
-  };
+  h += '<div class="card"><div class="card-header"><div class="card-accent" style="background:var(--negative)"></div><div class="card-title">Stop-Limit Alerts</div></div>';
+  h += '<table class="data-table"><thead><tr><th>Symbol</th><th>Stop</th><th>Status</th><th>Note</th></tr></thead><tbody>';
+  r.stop_alerts.forEach(function(a) {
+    h += '<tr class="' + urc(a.urgency) + '"><td><span class="ticker">' + a.sym + '</span></td>';
+    h += '<td><span class="data-num neg">$' + (typeof a.stop === 'number' ? a.stop.toFixed(2) : a.stop) + '</span></td>';
+    h += '<td>' + ub(a.urgency) + '</td><td class="cell-muted">' + a.note + '</td></tr>';
+  });
+  h += '</tbody></table></div>';
 
-  const html = `
-    <!-- MARKET SUMMARY CARDS -->
-    <div class="stat-cards">
-      <div class="stat-card">
-        <div class="stat-label">Market Trend</div>
-        <div class="stat-value" style="color:${trendColor};font-size:16px;text-transform:uppercase;">${r.market_summary.broad_trend}</div>
-        <div class="stat-change neutral">${r.market_summary.headline}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Key Level</div>
-        <div class="stat-value" style="font-size:16px;">${r.market_summary.key_level}</div>
-        <div class="stat-change neutral">S&P 500 reference</div>
-      </div>
-      <div class="stat-card amber">
-        <div class="stat-label">VIX</div>
-        <div class="stat-value" style="font-size:14px;">${r.market_summary.vix_note}</div>
-      </div>
-      <div class="stat-card blue">
-        <div class="stat-label">Cash Available</div>
-        <div class="stat-value">$${PORTFOLIO.cash.toLocaleString()}</div>
-        <div class="stat-change neutral">Deploy cash only - not Tier 1</div>
-      </div>
-    </div>
+  h += '<div class="card"><div class="card-header"><div class="card-accent" style="background:var(--gold)"></div><div class="card-title">Priority Actions</div></div>';
+  h += '<div class="priority-list">';
+  r.priority_actions.forEach(function(a) {
+    h += '<div class="priority-item"><div class="priority-num">' + a.priority + '</div><div class="priority-text">' + ab(a.type) + ' ' + a.action + '</div></div>';
+  });
+  h += '</div></div></div></div>';
 
-    <!-- THESIS STATUS -->
-    <div class="panels full" style="margin-bottom:16px;">
-      <div class="panel">
-        <div class="panel-header">DEFENSE Thesis Status</div>
-        <div class="thesis-grid">
-          <div class="thesis-cell">
-            <div class="thesis-name">ENERGY Energy</div>
-            <div class="thesis-status" style="color:${thesisColor(r.thesis_check.energy.status)}">${r.thesis_check.energy.status}</div>
-            <div class="thesis-detail">${r.thesis_check.energy.reason}</div>
-          </div>
-          <div class="thesis-cell">
-            <div class="thesis-name">🥇 Metals</div>
-            <div class="thesis-status" style="color:${thesisColor(r.thesis_check.metals.status)}">${r.thesis_check.metals.status}</div>
-            <div class="thesis-detail">${r.thesis_check.metals.reason}</div>
-          </div>
-          <div class="thesis-cell">
-            <div class="thesis-name">🛡 Defense</div>
-            <div class="thesis-status" style="color:${thesisColor(r.thesis_check.defense.status)}">${r.thesis_check.defense.status}</div>
-            <div class="thesis-detail">${r.thesis_check.defense.reason}</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  // THESIS
+  h += '<div class="section"><div class="section-label">Trade Thesis</div>';
+  h += '<div class="card"><div class="thesis-grid">';
+  [['energy','Energy'],['metals','Metals'],['defense','Defense']].forEach(function(t) {
+    var th = r.thesis_check[t[0]];
+    h += '<div class="thesis-cell"><div class="thesis-label">' + t[1] + '</div><div class="thesis-status" style="color:' + tc(th.status) + '">' + th.status + '</div><div class="thesis-reason">' + th.reason + '</div></div>';
+  });
+  h += '</div></div></div>';
 
-    <!-- STOP ALERTS + PRIORITY ACTIONS -->
-    <div class="panels" style="margin-bottom:16px;">
-      <div class="panel">
-        <div class="panel-header">🚨 Stop-Limit Alerts</div>
-        <div class="panel-body">
-          <table>
-            <thead><tr>
-              <th>Symbol</th>
-              <th>Stop</th>
-              <th>Urgency</th>
-              <th>Note</th>
-            </tr></thead>
-            <tbody>
-              ${r.stop_alerts.map(a => `
-              <tr class="${alertClass(a.urgency)}">
-                <td><span class="sym">${a.sym}</span></td>
-                <td class="tag-stop">$${a.stop.toFixed(2)}</td>
-                <td>
-                  ${a.urgency === 'critical' ? '<span class="badge badge-alert">CRITICAL</span>' :
-                    a.urgency === 'alert' ? '<span class="badge badge-alert">ALERT</span>' :
-                    a.urgency === 'watch' ? '<span class="badge badge-watch">WATCH</span>' :
-                    '<span class="badge badge-ok">SAFE</span>'}
-                </td>
-                <td style="color:var(--muted);white-space:normal;max-width:200px;">${a.note}</td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
+  // TIER 1
+  h += '<div class="section"><div class="section-label">Tier 1 Holdings</div><div class="section-title">Forever Holds &mdash; Untouchable</div>';
+  h += '<div class="card"><table class="data-table"><thead><tr><th>Symbol</th><th>Shares</th><th>Avg Cost</th><th>MA Signal</th><th>Verdict</th><th>Action</th><th>Note</th></tr></thead><tbody>';
+  r.tier1_status.forEach(function(s, i) {
+    var p = PORTFOLIO.tier1[i] || {};
+    h += '<tr class="row-t1"><td><span class="ticker">' + s.sym + '</span> <span class="badge badge-t1">T1</span></td>';
+    h += '<td><span class="data-num">' + (p.shares || '') + '</span></td>';
+    h += '<td><span class="data-num">$' + (p.avgCost || '') + '</span></td>';
+    h += '<td class="cell-muted">' + s.ma_signal + '</td>';
+    h += '<td style="font-size:11px;font-weight:600;color:var(--info)">' + s.verdict + '</td>';
+    h += '<td><span style="color:var(--positive);font-weight:700;">' + s.action + '</span></td>';
+    h += '<td class="cell-muted">' + s.note + '</td></tr>';
+  });
+  h += '</tbody></table></div></div>';
 
-      <div class="panel">
-        <div class="panel-header">🎯 Priority Actions</div>
-        <div class="priority-list">
-          ${r.priority_actions.map((a,i) => `
-          <div class="priority-item">
-            <div class="priority-num">${a.priority}</div>
-            <div class="priority-text">${priBadge(a.type)} ${a.action}</div>
-          </div>`).join('')}
-        </div>
-      </div>
-    </div>
+  // TIER 2
+  h += '<div class="section"><div class="section-label">Tier 2 Holdings</div><div class="section-title">War Trades &mdash; Trim Freely When Thesis Ends</div>';
+  h += '<div class="card"><table class="data-table"><thead><tr><th>Symbol</th><th>Shares</th><th>Avg Cost</th><th>Stop</th><th>Thesis</th><th>Proximity</th><th>Action</th><th>Note</th></tr></thead><tbody>';
+  r.tier2_status.forEach(function(s) {
+    var p = PORTFOLIO.tier2.find(function(x) { return x.sym === s.sym; }) || {};
+    var rc = (s.price_vs_stop === 'near stop' || s.price_vs_stop === 'stop triggered') ? 'row-warn' : '';
+    h += '<tr class="' + rc + '"><td><span class="ticker">' + s.sym + '</span> <span class="badge badge-t2">T2</span></td>';
+    h += '<td><span class="data-num">' + (p.shares || '-') + '</span></td>';
+    h += '<td><span class="data-num">$' + (p.avgCost || '-') + '</span></td>';
+    h += '<td><span class="data-num neg">' + (p.stop ? '$' + p.stop.toFixed(2) : '-') + '</span></td>';
+    h += '<td>' + vb(s.verdict) + '</td>';
+    h += '<td class="cell-muted">' + (s.stop_pct || s.price_vs_stop) + '</td>';
+    h += '<td>' + ab(s.action) + '</td>';
+    h += '<td class="cell-muted">' + s.note + '</td></tr>';
+  });
+  h += '</tbody></table></div></div>';
 
-    <!-- TIER 1 TABLE -->
-    <div class="panels full" style="margin-bottom:16px;">
-      <div class="panel">
-        <div class="panel-header">🔵 Tier 1 - Forever Holds (UNTOUCHABLE)</div>
-        <div class="panel-body">
-          <table>
-            <thead><tr>
-              <th>Symbol</th>
-              <th>Shares</th>
-              <th>Avg Cost</th>
-              <th>MA Signal</th>
-              <th>Verdict</th>
-              <th>Action</th>
-              <th>Note</th>
-            </tr></thead>
-            <tbody>
-              ${r.tier1_status.map((s, i) => {
-                const p = PORTFOLIO.tier1[i] || {};
-                return `<tr class="row-t1">
-                  <td><span class="sym">${s.sym}</span> <span class="badge badge-t1">T1</span></td>
-                  <td>${p.shares || ''}</td>
-                  <td>$${p.avgCost || ''}</td>
-                  <td style="color:var(--muted);font-size:11px;">${s.ma_signal}</td>
-                  <td style="color:var(--blue);font-weight:600;font-size:11px;">${s.verdict}</td>
-                  <td><span style="color:var(--green);font-weight:700;">${s.action}</span></td>
-                  <td style="color:var(--muted);font-size:11px;white-space:normal;max-width:180px;">${s.note}</td>
-                </tr>`;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  // ANALYSIS + WATCHLIST
+  h += '<div class="section"><div class="bottom-grid">';
 
-    <!-- TIER 2 TABLE -->
-    <div class="panels full" style="margin-bottom:16px;">
-      <div class="panel">
-        <div class="panel-header">DEFENSE Tier 2 - War Trades (Trim Freely)</div>
-        <div class="panel-body">
-          <table>
-            <thead><tr>
-              <th>Symbol</th>
-              <th>Shares</th>
-              <th>Avg Cost</th>
-              <th>Stop</th>
-              <th>Thesis</th>
-              <th>Stop Proximity</th>
-              <th>Action</th>
-              <th>Note</th>
-            </tr></thead>
-            <tbody>
-              ${r.tier2_status.map((s, i) => {
-                const p = PORTFOLIO.tier2.find(x => x.sym === s.sym) || {};
-                const urgency = s.price_vs_stop === 'critical' || s.price_vs_stop === 'near stop' ? 'row-warn' : '';
-                return `<tr class="${urgency}">
-                  <td><span class="sym">${s.sym}</span> <span class="badge badge-t2">T2</span></td>
-                  <td>${p.shares || '-'}</td>
-                  <td>$${p.avgCost || '-'}</td>
-                  <td class="tag-stop">${p.stop ? '$' + p.stop.toFixed(2) : '-'}</td>
-                  <td>
-                    ${s.verdict === 'INTACT' ? '<span class="badge badge-ok">INTACT</span>' :
-                      s.verdict === 'CAUTION' ? '<span class="badge badge-watch">CAUTION</span>' :
-                      '<span class="badge badge-alert">THESIS ENDED</span>'}
-                  </td>
-                  <td style="font-size:11px;color:var(--muted);">${s.stop_pct || s.price_vs_stop}</td>
-                  <td><span style="color:${t2color(s.action)};font-weight:700;">${s.action}</span></td>
-                  <td style="color:var(--muted);font-size:11px;white-space:normal;max-width:180px;">${s.note}</td>
-                </tr>`;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  h += '<div><div class="section-label">Rulebook Analysis</div>';
+  h += '<div class="card"><div class="analysis-body">' + r.analysis.replace(/\n/g,'<br><br>') + '</div></div></div>';
 
-    <!-- ANALYSIS + WATCHLIST -->
-    <div class="panels" style="margin-bottom:24px;">
-      <div class="panel" style="grid-column: span 1;">
-        <div class="panel-header">🧠 Rulebook Analysis</div>
-        <div class="analysis-block">${r.analysis.replace(/\n/g, '<br><br>')}</div>
-      </div>
+  h += '<div><div class="section-label">Watchlist</div>';
+  h += '<div class="card" style="margin-bottom:16px;"><table class="data-table"><thead><tr><th>Symbol</th><th>Signal</th><th>Note</th></tr></thead><tbody>';
+  r.watchlist.forEach(function(w) {
+    var sig = w.signal === 'ENTRY' ? '<span class="badge badge-buy">Entry</span>' : w.signal === 'WATCH' ? '<span class="badge badge-watch">Watch</span>' : '<span class="badge badge-exit">Stay Out</span>';
+    h += '<tr><td><span class="ticker">' + w.sym + '</span></td><td>' + sig + '</td><td class="cell-muted">' + w.note + '</td></tr>';
+  });
+  h += '</tbody></table>';
+  h += '<div class="ma-legend"><div class="ma-legend-title">MA Entry Hierarchy</div>';
+  h += '<div class="ma-row"><div class="ma-dot" style="background:#C9A84C"></div><span style="color:#C9A84C;font-weight:600;">9-Day</span>&nbsp;&mdash;&nbsp;Short-term momentum</div>';
+  h += '<div class="ma-row"><div class="ma-dot" style="background:#4A7FB5"></div><span style="color:#4A7FB5;font-weight:600;">13-Day</span>&nbsp;&mdash;&nbsp;Early trend confirmation</div>';
+  h += '<div class="ma-row"><div class="ma-dot" style="background:#B8C4D4"></div><span style="color:#B8C4D4;font-weight:600;">20-Day</span>&nbsp;&mdash;&nbsp;Primary entry trigger</div>';
+  h += '<div class="ma-row"><div class="ma-dot" style="background:#A84040"></div><span style="color:#A84040;font-weight:600;">50-Day</span>&nbsp;&mdash;&nbsp;Major support floor</div>';
+  h += '<div class="ma-rule">Ideal entry: bounce UP through 20-day with 50-day below. Falling knife: price below all 4 MAs, stay out.</div>';
+  h += '</div></div></div>';
+  h += '</div></div>';
 
-      <div class="panel">
-        <div class="panel-header">👁 Watchlist</div>
-        <div class="panel-body">
-          <table>
-            <thead><tr><th>Symbol</th><th>Signal</th><th>Note</th></tr></thead>
-            <tbody>
-              ${r.watchlist.map(w => `<tr>
-                <td><span class="sym">${w.sym}</span></td>
-                <td>
-                  ${w.signal === 'ENTRY' ? '<span class="badge badge-ok">ENTRY</span>' :
-                    w.signal === 'WATCH' ? '<span class="badge badge-watch">WATCH</span>' :
-                    '<span class="badge badge-alert">STAY OUT</span>'}
-                </td>
-                <td style="color:var(--muted);font-size:11px;white-space:normal;">${w.note}</td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
+  h += '<div class="report-footer">Not Financial Advice &bull; Personal Reference Only &bull; Always Verify in Fidelity Before Trading</div>';
 
-        <!-- MA LEGEND -->
-        <div style="padding:12px 16px; border-top: 1px solid var(--border);">
-          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">MA Entry Hierarchy</div>
-          <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
-            <div><span class="ma-dot ma-y"></span><span style="color:var(--ma-yellow)">9-Day Yellow</span> - Short-term momentum</div>
-            <div><span class="ma-dot ma-b"></span><span style="color:var(--ma-blue)">13-Day Blue</span> - Early trend confirmation</div>
-            <div><span class="ma-dot ma-w"></span><span style="color:var(--ma-white)">20-Day White</span> - STAR Primary entry trigger</div>
-            <div><span class="ma-dot ma-r"></span><span style="color:var(--ma-red)">50-Day Red</span> - Major support floor</div>
-          </div>
-          <div style="margin-top:10px;font-size:10px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;">
-            Ideal entry: price bouncing UP through WHITE 20-day with 🔴 50-day below as support<br>
-            Falling knife: price below ALL 4 MAs - stay out
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="text-align:center;padding:20px;color:var(--muted);font-size:10px;letter-spacing:2px;border-top:1px solid var(--border);">
-      NOT FINANCIAL ADVICE &bull; FOR PERSONAL REFERENCE ONLY &bull; ALWAYS VERIFY IN FIDELITY BEFORE TRADING
-    </div>
-  `;
-
-  document.getElementById('report').innerHTML = html;
+  document.getElementById('report-body').innerHTML = h;
   document.getElementById('report').style.display = 'block';
   document.getElementById('run-btn').style.display = 'inline-block';
 }
