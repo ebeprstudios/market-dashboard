@@ -1,0 +1,39 @@
+name: Portfolio Watch Clock
+
+on:
+  # Every weekday at 8:30 AM ET (13:30 UTC)
+  schedule:
+    - cron: '30 13 * * 1-5'
+
+  # Manual trigger anytime
+  workflow_dispatch:
+    inputs:
+      note:
+        description: 'Optional note (e.g. manual run, market event)'
+        required: false
+        default: 'Manual trigger'
+
+jobs:
+  daily-briefing:
+    runs-on: ubuntu-latest
+    name: Run Daily Portfolio Briefing
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests yfinance
+
+      - name: Run Watch Clock
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EMAIL_FROM:        ${{ secrets.EMAIL_FROM }}
+          EMAIL_PASSWORD:    ${{ secrets.EMAIL_PASSWORD }}
+          MANAGER_EMAIL:     ${{ secrets.MANAGER_EMAIL }}
+        run: python market_agent.py
